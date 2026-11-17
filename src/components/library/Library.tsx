@@ -284,7 +284,7 @@ export function Library({
               <button
                 className="katha-book-card katha-book-card--sample"
                 onClick={onDemo}
-                aria-label="A first light, Open sample reading"
+                
               >
                 <span
                   className="katha-cover-photo"
