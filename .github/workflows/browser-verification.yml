@@ -1,0 +1,52 @@
+name: Katha browser and privacy verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install application dependencies
+        run: bun install --frozen-lockfile
+      - name: Build production app
+        run: bun run build
+      - name: Install isolated browser-test tooling
+        run: |
+          bun add --no-save playwright wrangler @axe-core/playwright
+          bunx playwright install chromium
+      - name: Start local production preview
+        shell: bash
+        run: |
+          bunx wrangler dev --config .output/server/wrangler.json --ip 127.0.0.1 --port 4173 --local > /tmp/katha-preview.log 2>&1 &
+          echo $! > /tmp/katha-preview.pid
+          for i in $(seq 1 45); do
+            if curl --fail --silent http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
+            sleep 2
+          done
+          cat /tmp/katha-preview.log
+          exit 1
+      - name: Browser flows and privacy assertion
+        run: node tests/browser/verify.mjs
+      - name: Automated accessibility audit
+        run: node tests/browser/accessibility.mjs
+      - name: Full dependency audit (informational)
+        if: always()
+        shell: bash
+        run: |
+          bun audit > /tmp/katha-audit.txt 2>&1 || true
+          cat /tmp/katha-audit.txt
+      - name: Preview diagnostics on failure
+        if: failure()
+        run: cat /tmp/katha-preview.log || true

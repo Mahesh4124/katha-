@@ -204,6 +204,9 @@ export function Reader({
 
       <div
         ref={scrollerRef}
+        tabIndex={0}
+        role="region"
+        aria-label="Reading passage"
         className="absolute inset-0 z-10 overflow-y-auto overscroll-contain px-3 pb-8 pt-24"
       >
         <article
