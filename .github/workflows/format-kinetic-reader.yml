@@ -5,6 +5,7 @@ on:
       - frontend/kinetic-book-mockup-parity-20261117
     paths:
       - .github/workflows/format-kinetic-reader.yml
+      - src/components/scenes/Scene.tsx
 permissions:
   contents: write
 jobs:

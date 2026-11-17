@@ -28,8 +28,8 @@ export function Scene({
   mini = false,
   className = "",
 }: SceneProps & { theme: ThemeId }) {
-  const motion = reduce || mini ? "0px" : `${(6 + intensity * 14).toFixed(1)}px`;
-  const css = { "--world-drift": motion } as CSSProperties;
+  const drift = reduce || mini ? "0px" : `${(6 + intensity * 14).toFixed(1)}px`;
+  const css = { "--world-drift": drift } as CSSProperties;
   return (
     <div
       aria-hidden="true"
