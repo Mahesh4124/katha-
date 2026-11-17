@@ -281,11 +281,7 @@ export function Library({
             }}
           >
             {!matches.length && !search.trim() ? (
-              <button
-                className="katha-book-card katha-book-card--sample"
-                onClick={onDemo}
-                
-              >
+              <button className="katha-book-card katha-book-card--sample" onClick={onDemo}>
                 <span
                   className="katha-cover-photo"
                   style={{ backgroundImage: 'url("' + SCENE_ART[prefs.theme].light + '")' }}
