@@ -19,9 +19,12 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Check TypeScript types
         run: bunx tsc --noEmit
-      - name: Check code correctness (formatting tracked separately)
-        run: >-
-          bunx eslint src --rule 'prettier/prettier: off'
+      - name: Check full ESLint
+        run: bunx eslint src
+      - name: Check source formatting
+        run: bunx prettier --check src
+      - name: Audit production dependencies
+        run: bun audit --prod
       - name: Run regression tests
         run: bun run test
       - name: Build application

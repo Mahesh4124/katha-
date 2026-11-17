@@ -105,7 +105,14 @@ export function FlowingLightRibbon(p: Props) {
 
       // reads first
       const t = clock.now();
-      if (!clock.playing && t === lastPaint && lastProps === live.current && Math.abs(vis - (clock.started ? 1 : 0)) < 0.001 && target === null) return;
+      if (
+        !clock.playing &&
+        t === lastPaint &&
+        lastProps === live.current &&
+        Math.abs(vis - (clock.started ? 1 : 0)) < 0.001 &&
+        target === null
+      )
+        return;
       lastPaint = t;
       lastProps = live.current;
       const brTop = box.getBoundingClientRect().top;
@@ -123,9 +130,14 @@ export function FlowingLightRibbon(p: Props) {
         const total = fr.reduce((s, q) => s + q.w, 0);
         let acc = frac * total;
         for (const q of fr) {
-          if (acc <= q.w) { f = q; ff = acc / q.w; break; }
+          if (acc <= q.w) {
+            f = q;
+            ff = acc / q.w;
+            break;
+          }
           acc -= q.w;
-          f = q; ff = 1;
+          f = q;
+          ff = 1;
         }
       }
       const next = frags[idx + 1]?.[0];
@@ -162,7 +174,10 @@ export function FlowingLightRibbon(p: Props) {
       const core = L * 0.32;
       segEls?.forEach((el, i) => {
         const s = segs[i];
-        if (!s) { el.style.opacity = "0"; return; }
+        if (!s) {
+          el.style.opacity = "0";
+          return;
+        }
         const ln = lines[s.li];
         const lead = i === 0 && !reduceMotion ? 18 : 0;
         const pad = ln.h * 0.1;
@@ -178,7 +193,9 @@ export function FlowingLightRibbon(p: Props) {
           const a2 = Math.max(s.a, s.b - (core - s.dB));
           const w2 = s.b - a2 + lead;
           if (w2 > 1) {
-            masks.push(`linear-gradient(90deg, transparent 0%, #000 ${s.a < a2 ? 30 : 0}%, #000 100%)`);
+            masks.push(
+              `linear-gradient(90deg, transparent 0%, #000 ${s.a < a2 ? 30 : 0}%, #000 100%)`,
+            );
             sizes.push(`${w2.toFixed(1)}px ${(ln.h + 2).toFixed(1)}px`);
             poss.push(`${a2.toFixed(1)}px ${(ln.y - 1).toFixed(1)}px`);
           }
@@ -235,7 +252,11 @@ export function FlowingLightRibbon(p: Props) {
 
   return (
     <div ref={layerRef} aria-hidden className="pointer-events-none absolute inset-0">
-      <div data-bloom className="ribbon-bloom" style={{ opacity: 0, mixBlendMode: p.mode === "dark" ? "screen" : "multiply" }} />
+      <div
+        data-bloom
+        className="ribbon-bloom"
+        style={{ opacity: 0, mixBlendMode: p.mode === "dark" ? "screen" : "multiply" }}
+      />
       {[0, 1, 2, 3].map((i) => (
         <div key={i} data-seg className="ribbon-seg" style={{ opacity: 0 }} />
       ))}

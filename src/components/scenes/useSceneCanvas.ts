@@ -1,6 +1,12 @@
 import { useEffect, useRef, type RefObject } from "react";
 
-export type SceneProps = { mode: "dark" | "light"; intensity: number; reduce: boolean; mini?: boolean | undefined; className?: string | undefined };
+export type SceneProps = {
+  mode: "dark" | "light";
+  intensity: number;
+  reduce: boolean;
+  mini?: boolean | undefined;
+  className?: string | undefined;
+};
 
 type Opts = {
   mini?: boolean | undefined;
@@ -12,7 +18,8 @@ type Opts = {
 
 export const isLowSpec = () =>
   typeof navigator !== "undefined" &&
-  ((navigator.hardwareConcurrency || 8) <= 4 || ((navigator as unknown as { deviceMemory?: number }).deviceMemory || 8) <= 4);
+  ((navigator.hardwareConcurrency || 8) <= 4 ||
+    ((navigator as unknown as { deviceMemory?: number }).deviceMemory || 8) <= 4);
 
 /** Canvas loop with capped DPR, frame budget, and pause on hidden page. */
 export function useSceneCanvas(ref: RefObject<HTMLCanvasElement | null>, o: Opts) {
@@ -26,7 +33,10 @@ export function useSceneCanvas(ref: RefObject<HTMLCanvasElement | null>, o: Opts
     const low = isLowSpec();
     const dpr = Math.min(window.devicePixelRatio || 1, o.mini || low ? 1 : 1.5);
     const frameMs = o.mini ? 1000 / 24 : low ? 1000 / 30 : 1000 / 55;
-    let w = 1, h = 1, raf = 0, last = 0;
+    let w = 1,
+      h = 1,
+      raf = 0,
+      last = 0;
     const t0 = performance.now() - 8000;
     const paint = (now: number, force = false) => {
       if (!force && now - last < frameMs) return;
