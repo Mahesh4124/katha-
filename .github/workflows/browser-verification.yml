@@ -39,6 +39,8 @@ jobs:
           exit 1
       - name: Browser flows and privacy assertion
         run: node tests/browser/verify.mjs
+      - name: Simulated lifecycle and storage failures
+        run: node tests/browser/lifecycle-storage.mjs
       - name: Automated accessibility audit
         run: node tests/browser/accessibility.mjs
       - name: Full dependency audit (informational)
