@@ -15,7 +15,7 @@ export type Book = {
   text: string;
   createdAt: number;
   progress: number;
-  coverImage?: string;
+  coverImage?: string | undefined;
   annotations?: Annotation[];
 };
 export type Prefs = {
