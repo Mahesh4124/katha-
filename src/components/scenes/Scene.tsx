@@ -54,6 +54,7 @@ export function Scene({
             alt=""
             loading={mini ? "lazy" : "eager"}
             decoding="async"
+            fetchPriority={mini ? "auto" : "high"}
             draggable={false}
           />
         </motion.div>

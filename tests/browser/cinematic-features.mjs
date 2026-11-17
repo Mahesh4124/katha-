@@ -28,6 +28,9 @@ try {
     assert.equal(await page.locator(".cinematic-world img").first().count(), 1);
     assert.ok(await page.locator(".cinematic-world img").first().evaluate((img) => img.complete && img.naturalWidth >= 900),
       "cinematic scene should display a local high-res image");
+    await page.locator(".cinematic-world:not(.cinematic-world--mini) .cinematic-world__photo").first()
+      .evaluate(async (image) => { await image.decode(); });
+    await page.evaluate(() => document.fonts?.ready);
     await page.screenshot({ path: "test-results/cinematic/home-" + width + ".png" });
     await page.getByRole("button", { name: "Try different styles" }).click();
     assert.equal(await page.locator("[data-world]").first().getAttribute("data-world"), "sakura");

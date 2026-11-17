@@ -1532,3 +1532,21 @@ body:has(.katha-book-flight) .katha-book-card--active {
     animation: none !important;
   }
 }
+
+/* Mobile editorial density: the world and a real book must appear on the first screen. */
+@media (max-width: 640px) {
+  .katha-home-content { padding-top: 14px; }
+  .katha-hero { padding-top: clamp(24px, 4.5vh, 42px); padding-bottom: 28px; }
+  .katha-hero h1 { font-size: clamp(2.8rem, 9.25vw, 3.65rem); margin: 12px 0 9px; }
+  .katha-hero p { display: none; }
+  .katha-hero-buttons { margin-top: 18px; gap: 8px; flex-direction: row; align-items: center; }
+  .katha-primary-action { font-size: 0.88rem; gap: 7px; padding: 10px 13px; min-height: 43px; }
+  .katha-outline-action { font-size: 0.76rem; gap: 7px; padding: 10px 12px; min-height: 43px; }
+  .katha-world-section, .katha-shelf-section { margin-bottom: 26px; }
+  .katha-section-head { margin-bottom: 11px; }
+  .katha-section-head h2 { font-size: 2.2rem; margin-top: 4px; }
+  .katha-world-card { min-height: 82px; }
+  .katha-cover-stage { height: 308px; }
+  .katha-book-card { width: 188px; height: 270px; }
+  .katha-bottom-nav { padding: 9px; }
+}

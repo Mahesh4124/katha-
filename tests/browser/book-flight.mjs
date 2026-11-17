@@ -33,10 +33,12 @@ try {
     const flight = page.locator("[data-book-flight='opening']");
     await flight.waitFor({ state: "visible", timeout: 1800 });
     assert.ok(await page.locator(".katha-book-flight__cover").count());
+    await page.waitForTimeout(270);
     await page.screenshot({ path: "test-results/cinematic/kinetic-flight-" + width + ".png" });
     await page.getByRole("region", { name: "Reading passage" }).waitFor({ timeout: 6500 });
     assert.equal(await flight.count(), 0, "opening animation must clean up");
     await page.getByRole("toolbar", { name: "Reading annotations" }).waitFor();
+    await page.waitForTimeout(900);
     await page.screenshot({ path: "test-results/cinematic/kinetic-reader-" + width + ".png" });
     assert.deepEqual(pageErrors, [], "new transitions must not produce exceptions");
     console.log(width + "px opening transition and scene crossfade: PASS");
