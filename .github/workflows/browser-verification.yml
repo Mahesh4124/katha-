@@ -22,12 +22,12 @@ jobs:
         run: bun run build
       - name: Install isolated browser-test tooling
         run: |
-          bun add --no-save playwright
+          bun add --no-save playwright wrangler
           bunx playwright install chromium
       - name: Start local production preview
         shell: bash
         run: |
-          bun run preview -- --host 127.0.0.1 --port 4173 > /tmp/katha-preview.log 2>&1 &
+          bunx wrangler dev --config .output/server/wrangler.json --ip 127.0.0.1 --port 4173 --local > /tmp/katha-preview.log 2>&1 &
           echo $! > /tmp/katha-preview.pid
           for i in $(seq 1 45); do
             if curl --fail --silent http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
