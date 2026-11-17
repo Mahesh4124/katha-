@@ -7,6 +7,7 @@
 - Tested flows: create/read/save/reload, passage retention, settings, scenes, playback controls, mocked malicious-looking text, invalid executable-looking file names, no script execution, and no external transmission of QA book text.
 - Google Fonts resources are loaded externally and may reveal ordinary request metadata (e.g. IP address) to the font provider. This should be disclosed; it is not full offline operation.
 - Initial `vite preview` run failed because Nitro built with the Cloudflare Worker preset but Vite's generic preview expected `dist/server/server.js`. Correct production-style QA uses `wrangler dev` with generated `.output/server/wrangler.json`.
+- The first accessibility run exposed a keyboard-inaccessible reader scroll area. Fixed with a focusable, labelled reading region (`tabIndex=0`, `role=region`, `aria-label`). Follow-up [WCAG Chromium run 43997220208](https://github.com/Mahesh4124/katha-/actions/runs/43997220208) passed 9/9 axe-core checks with **zero detected violations** in the tested library, reader, and reader-settings states at all three viewports.
 - Full `bun audit` reports three **moderate development-tool** advisories involving `@vitest/mocker` and `minimatch`; `bun audit --prod` passes. Track in [issue #6](https://github.com/Mahesh4124/katha-/issues/6). Compatible `bun audit fix` did not clear these advisories. No blanket major overrides were merged.
 
 ## Not yet confirmed
