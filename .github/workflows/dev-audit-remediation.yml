@@ -1,0 +1,44 @@
+name: Development dependency audit remediation
+
+on:
+  push:
+    branches: [verify/browser-privacy-20261117]
+    paths: [.github/workflows/dev-audit-remediation.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  compatible-dev-patches:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install unchanged lockfile
+        run: bun install --frozen-lockfile
+      - name: Attempt compatible security patches
+        run: |
+          bun audit fix || true
+          bun install --frozen-lockfile
+      - name: Require clean full dependency audit
+        run: bun audit
+      - name: Validate types, lint, formatting, tests and build
+        run: |
+          bunx tsc --noEmit
+          bunx eslint src
+          bunx prettier --check src
+          bun run test
+          bun run build
+      - name: Commit only validated dependency changes
+        run: |
+          git add package.json bun.lock
+          if git diff --cached --quiet; then
+            echo "No compatible changes available"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+Mahesh4124@users.noreply.github.com"
+          git commit -m "Remediate development dependency advisories"
+          git push origin HEAD:verify/browser-privacy-20261117
