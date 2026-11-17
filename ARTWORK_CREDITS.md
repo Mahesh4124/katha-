@@ -1,6 +1,7 @@
-# Katha scene artwork credits
+# Katha cinematic artwork credits
 
-- **Lotus Lake night and day:** Two scene artworks supplied by the Katha project owner in ChatGPT on 2026-11-17, locally optimized from their original PNGs; no third-party hosted request is needed at app runtime. Their source files are 928px wide, **not natively 4K**.
-- **Sakura Mountain:** Photograph “Cherry blossom distance with Mount Fuji, Japan” by [Daniel Hehn](https://unsplash.com/photos/cherry-blossom-distance-with-mount-fuji-japan-NdkM92CRaxg), used under the [Unsplash License](https://unsplash.com/license). Processed into local WebP format to avoid runtime third-party image requests.
-- Visual movement uses subtle CSS parallax/transforms on the existing photographic and painted scene art, never algorithmically generated primitive flowers or mountain geometry.
-- Katha's Google Fonts stylesheet is still fetched from Google; full offline availability requires bundling font assets as a separate step.
+- **Lotus Lake night and day:** Two owner-supplied scene artworks, optimized as local WebP files. Source images are approximately 928 × 1648 and are not native 4K photographs. No generative model is claimed.
+- **Sakura Mountain:** High-resolution photograph, *Serene View of Mount Fuji with Cherry Blossoms*, by [Guohua Song on Pexels](https://www.pexels.com/photo/serene-view-of-mount-fuji-with-cherry-blossoms-37438079/), used under the [Pexels License](https://www.pexels.com/license/). Source image is listed as 8040 × 5360 pixels; this version uses a locally optimized **2160 × 3840** portrait crop. The photograph is realistic, but is not the fantastical temple-and-waterfall image shown in the concept mockup.
+- All scene artwork is bundled locally in `public/worlds`. Scene motion is understated CSS parallax and lighting over these assets—not primitive canvas geometry or a rendered 3D world.
+- Font resources still load from Google Fonts, so true offline readiness needs a subsequent licensed font-bundling pass.
+- The concept visuals were aspirational still mockups; the frontend is a working implementation subject to responsive visual verification, not a claim of exact pixel parity.
