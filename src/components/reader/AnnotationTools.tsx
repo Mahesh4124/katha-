@@ -70,7 +70,7 @@ export function ParallelNotes({
           “{note.quote.length > 155 ? note.quote.slice(0, 155) + "…" : note.quote}”
         </button>}
         {note.text && <p>{note.text}</p>}
-        {note.kind === "drawing" && note.image && <img src={note.image} alt="Your saved drawing" className="katha-note-drawing"/>}
+        {note.kind === "drawing" && note.image && /^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(note.image) && <img src={note.image} alt="Your saved drawing" className="katha-note-drawing"/>}
         {note.kind === "diagram" && note.text && <div className="katha-note-diagram" aria-label="Saved diagram">
           {note.text.split(" → ").map((step, i) => <span key={i}>{i > 0 && <ArrowRight size={13}/>}<b>{step}</b></span>)}
         </div>}

@@ -10,10 +10,10 @@ try {
     const context = await browser.newContext({ viewport, reducedMotion: "reduce" });
     const page = await context.newPage();
     await page.goto(origin, { waitUntil: "domcontentloaded" });
-    await page.getByRole("button", { name: "Try the ribbon" }).waitFor();
+    await page.getByRole("button", { name: "Open sample reading" }).waitFor();
     for (const state of ["library", "reader", "reader-settings"]) {
       if (state === "reader") {
-        await page.getByRole("button", { name: "Try the ribbon" }).click();
+        await page.getByRole("button", { name: "Open sample reading" }).click();
         await page.getByRole("button", { name: "Back to library" }).waitFor();
       }
       if (state === "reader-settings") {

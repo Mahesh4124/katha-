@@ -137,3 +137,87 @@
 @media(max-width:380px){.katha-home-content{padding-left:16px;padding-right:16px}.katha-hero-buttons{flex-direction:column;align-items:start}.katha-book-card{width:185px;height:268px}.katha-cover-stage{height:328px}}
 @media(prefers-reduced-motion:reduce){.cinematic-world__photo,.cinematic-world__light,.cinematic-world__mist{animation:none!important;transform:none!important}.katha-book-card,.katha-world-thumb{transition:none!important}}
 [data-reduced="true"] .cinematic-world__photo,[data-reduced="true"] .cinematic-world__light,[data-reduced="true"] .cinematic-world__mist{animation:none!important;transform:none!important}
+
+
+/* Immersive reader and annotation studio */
+.katha-reader-screen{color:var(--katha-ivory)}
+.katha-reader-shade{background:linear-gradient(180deg,rgba(10,12,30,.47),rgba(10,12,30,.12) 42%,rgba(9,13,30,.63))}
+.katha-reader-header{padding-top:15px!important;padding-left:clamp(12px,3vw,38px)!important;padding-right:clamp(12px,3vw,38px)!important}
+.katha-reader-header .glass{max-width:620px;background:rgba(19,25,45,.69);border:1px solid rgba(255,236,215,.38);backdrop-filter:blur(24px);box-shadow:0 10px 24px rgba(0,0,0,.2)}
+.katha-reader-header .kicker{color:#f5ce9c}
+.katha-reader-header .font-display{font-size:clamp(1.1rem,2vw,1.6rem);color:#fff2e2}
+.katha-reader-notes-button{border:1px solid rgba(251,225,193,.48);border-radius:999px;padding:11px 14px;background:rgba(14,23,42,.72);backdrop-filter:blur(15px);color:#f4dbb4;white-space:nowrap;font:.78rem var(--font-ui)}
+.katha-reader-notes-button:hover{border-color:#ffdfb4}
+.katha-reader-scroll{padding-top:99px!important;padding-left:clamp(10px,3vw,26px)!important;padding-right:clamp(10px,3vw,26px)!important}
+.katha-reading-page{position:relative;border:1px solid rgba(249,211,173,.56)!important;border-radius:32px!important;background:linear-gradient(156deg,rgba(55,45,66,.84),rgba(24,29,56,.84) 48%,rgba(30,25,47,.86))!important;box-shadow:0 0 0 1px rgba(252,234,212,.07),0 30px 65px rgba(2,6,26,.65),inset 0 0 45px rgba(252,195,151,.085)!important;backdrop-filter:blur(24px) saturate(1.15)!important;min-height:330px;margin-bottom:12px}
+.katha-reading-page:before{content:"";position:absolute;inset:6px;border:1px solid rgba(255,229,185,.19);border-radius:27px;pointer-events:none}
+.katha-reading-page-heading{text-align:center;margin:5px auto 28px;max-width:560px;color:#fff6eb}
+.katha-reading-page-heading>span{font:.6rem var(--font-ui);letter-spacing:.28em;color:#f3caa1}
+.katha-reading-page-heading h1{font:italic 500 clamp(2rem,4vw,3.7rem)/1.03 var(--font-display);margin:15px 0 8px;overflow-wrap:anywhere}
+.katha-page-ornament{font:1.3rem Georgia,serif;color:#e9bc8f;text-shadow:0 0 18px rgba(255,202,154,.85)}
+.katha-reading-page .reader-text{font-size:calc(1.28rem * var(--fs,1))!important;line-height:1.88;color:#fff1e5}
+[data-mode="light"] .katha-reading-page{background:linear-gradient(145deg,rgba(255,244,227,.89),rgba(244,224,206,.91))!important;border-color:rgba(111,79,59,.5)!important}
+[data-mode="light"] .katha-reading-page .reader-text,[data-mode="light"] .katha-reading-page-heading{color:#352438}
+[data-mode="light"] .katha-reading-page-heading>span{color:#8c5946}
+.reader-word--bold{font-weight:800}
+.reader-word--italic{font-style:italic}
+.reader-word--highlight{border-radius:4px;background:rgba(251,200,111,.23);box-shadow:inset 0 -3px 0 rgba(255,203,109,.48)}
+[data-mode="light"] .reader-word--highlight{background:rgba(244,167,53,.24);box-shadow:inset 0 -3px 0 #d5a65c}
+.katha-reading-help{text-align:center;max-width:700px;margin:0 auto 25px;color:#f0e0db;text-shadow:0 2px 16px #050c1d;font-size:.7rem}
+.katha-annotation-toolbar{display:flex;align-items:center;gap:0;max-width:870px;margin:0 auto 9px;padding:7px;border-radius:23px;border:1px solid rgba(250,228,204,.44);background:rgba(21,26,47,.85);backdrop-filter:blur(20px);box-shadow:0 15px 34px rgba(0,0,0,.36);overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
+.katha-annotation-toolbar>button{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:72px;min-height:53px;border-right:1px solid rgba(253,222,192,.18);padding:5px 8px;color:#f5e5dd;font-size:.63rem;transition:color .22s,background .22s}
+.katha-annotation-toolbar>button:hover{color:#fcd69c;background:rgba(250,210,160,.11);border-radius:12px}
+.katha-annotation-toolbar>button svg{color:#f4cfaa}
+.katha-annotation-selection{color:#f4cfa0;white-space:nowrap;font-size:.65rem;margin:0 8px}
+.katha-player-panel{max-width:870px!important;background:rgba(20,26,45,.83)!important;border-color:rgba(251,223,190,.45)!important;box-shadow:0 12px 40px rgba(5,9,29,.57)!important}
+.katha-player-panel .kicker{color:#f3d7b9}
+.katha-annotation-error{max-width:870px;margin:4px auto 10px;background:rgba(80,20,40,.8);border:1px solid #f1aea9;border-radius:9px;font-size:.78rem;padding:8px}
+.katha-parallel-notes{position:fixed;z-index:35;top:92px;right:clamp(10px,3vw,42px);bottom:clamp(174px,21vh,230px);width:min(395px,95vw);display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(253,224,188,.55);border-radius:29px;background:linear-gradient(155deg,rgba(35,41,66,.95),rgba(18,27,49,.97));backdrop-filter:blur(26px);box-shadow:0 24px 54px rgba(0,0,0,.58);color:#fff5e7;padding:18px;animation:rise-in .35s both}
+.katha-notes-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0}
+.katha-notes-heading span{font:.54rem var(--font-ui);letter-spacing:.21em;color:#f1cd9f}
+.katha-notes-heading h2{display:flex;align-items:center;gap:9px;font:500 1.85rem/1.03 var(--font-display);margin-top:6px}
+.katha-notes-heading h2 svg{color:#f2d2af}
+.katha-notes-intro{font:.85rem/1.45 var(--font-read);color:#eedde0;padding-top:10px;padding-bottom:12px;border-bottom:1px solid rgba(255,223,187,.25)}
+.katha-notes-list{overflow:auto;min-height:0;flex:1;padding:12px 2px}
+.katha-note-empty{font:italic 1rem/1.5 var(--font-display);padding:16px 5px;color:#dfd5d8}
+.katha-note-card{border:1px solid rgba(255,227,198,.32);border-radius:18px;background:rgba(238,215,229,.1);padding:15px;margin-bottom:12px;box-shadow:0 5px 14px rgba(2,4,18,.18)}
+.katha-note-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:7px}
+.katha-note-head strong{font:500 1.2rem var(--font-display);color:#ffe3be}
+.katha-note-head button{width:27px;height:27px;display:grid;place-items:center;color:#edd6ca;border-radius:50%;border:1px solid rgba(255,255,255,.2)}
+.katha-note-quote{display:block;text-align:left;font:italic .96rem/1.35 var(--font-read);color:#e9dee4;padding:6px 0;overflow-wrap:anywhere}
+.katha-note-card>p{font:.98rem/1.42 var(--font-read);white-space:pre-wrap;color:#fff5e5;overflow-wrap:anywhere}
+.katha-note-drawing{width:100%;height:auto;max-height:150px;object-fit:contain;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.16);margin-top:8px;border-radius:10px}
+.katha-note-diagram,.katha-diagram-preview{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:10px 0}
+.katha-note-diagram span,.katha-diagram-preview span{display:inline-flex;align-items:center;gap:6px}
+.katha-note-diagram b,.katha-diagram-preview b{padding:6px 8px;border:1px solid rgba(250,220,184,.5);border-radius:8px;background:rgba(250,210,183,.12);font-weight:500;font-size:.8rem}
+.katha-note-add{display:flex;align-items:center;justify-content:center;gap:9px;border:1px solid #eec9a9;border-radius:999px;padding:12px;margin-top:7px;color:#fff0db;font:500 1rem var(--font-display);flex-shrink:0}
+.katha-note-composer{border-top:1px solid rgba(255,228,196,.24);padding:12px 0 2px}
+.katha-note-composer label{display:block;font:.72rem var(--font-ui);margin-bottom:5px;color:#f5d4b2}
+.katha-note-composer textarea{width:100%;min-height:90px;resize:vertical;border:1px solid rgba(255,222,187,.34);border-radius:12px;padding:12px;background:rgba(8,14,27,.58);font:1rem var(--font-read);color:#fff}
+.katha-note-composer small{display:block;font-size:.65rem;color:#d8c6c3;margin-top:6px}
+.katha-note-composer .katha-primary-action{font-size:.9rem;padding:7px 12px;min-height:36px}
+.katha-note-composer .katha-ghost-button{font-size:.75rem;padding:7px 10px;min-height:36px}
+.katha-drawing-modal{width:min(740px,100%)}
+.katha-sketch-canvas{width:100%;height:auto;display:block;background:rgba(9,13,32,.76);border:1px solid rgba(251,213,177,.48);border-radius:14px;touch-action:none}
+.katha-pen-size{display:flex;align-items:center;gap:8px;color:#f1d4ba;font-size:.76rem}
+.katha-diagram-preview{justify-content:center;padding:15px;margin:12px 0;border:1px solid rgba(255,229,196,.25);border-radius:16px;background:rgba(0,0,0,.2)}
+@media(max-width:640px){
+.katha-reader-header{padding:10px!important;gap:7px!important}
+.katha-reader-header .glass{padding:6px 11px!important}
+.katha-reader-header .kicker{font-size:.47rem!important}
+.katha-reader-header .font-display{font-size:1.05rem}
+.katha-reader-notes-button{font-size:.66rem;padding:10px 8px;max-width:116px;white-space:normal;text-align:center}
+.katha-reader-scroll{padding-top:78px!important}
+.katha-reading-page{padding:26px 23px!important;border-radius:22px!important}
+.katha-reading-page-heading h1{font-size:2rem}
+.katha-reading-page .reader-text{font-size:calc(1.22rem * var(--fs,1))!important;line-height:1.79}
+.katha-annotation-toolbar{border-radius:17px;scrollbar-width:none;padding:4px}
+.katha-annotation-toolbar>button{min-width:61px;min-height:47px;font-size:.58rem}
+.katha-annotation-toolbar>button svg{width:17px;height:17px}
+.katha-annotation-selection{display:none}
+.katha-parallel-notes{inset:70px 8px 178px auto;width:min(380px,calc(100vw - 16px));padding:14px;border-radius:21px}
+.katha-notes-heading h2{font-size:1.6rem}
+.katha-player-panel{padding:10px!important}
+.katha-drawing-modal{padding:16px}
+}
+@media(prefers-reduced-motion:reduce){.katha-parallel-notes{animation:none!important}}

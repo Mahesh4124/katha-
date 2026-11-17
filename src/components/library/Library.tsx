@@ -48,7 +48,8 @@ function CoverArt({ book }: { book: Book }) {
   const variants: Array<"lotus" | "sakura"> = ["lotus", "sakura", "lotus", "sakura"];
   const number = Array.from(book.title).reduce((n, c) => n + (c.codePointAt(0) || 0), 0);
   const theme = variants[number % variants.length];
-  const background = book.coverImage || SCENE_ART[theme].light;
+  const background = book.coverImage && /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(book.coverImage)
+    ? book.coverImage : SCENE_ART[theme].light;
   return (
     <>
       <span className="katha-cover-photo" style={{ backgroundImage: 'url("' + background + '")' }} />

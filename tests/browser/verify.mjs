@@ -27,7 +27,7 @@ try {
     await page.getByRole("button", { name: "Toggle day or night" }).waitFor();
     await page.getByRole("button", { name: "Toggle day or night" }).click();
     assert.equal(await page.locator("[data-mode]").first().getAttribute("data-mode"), "light");
-    await page.getByRole("button", { name: /Sakura Breeze/ }).click();
+    await page.getByRole("button", { name: /Sakura Mountain/ }).click();
     await page.getByRole("button", { name: "Add text" }).click();
 
     const fakeExe = { name: "story.txt.exe", mimeType: "application/x-msdownload", buffer: Buffer.from("MZ mock—not executable") };
