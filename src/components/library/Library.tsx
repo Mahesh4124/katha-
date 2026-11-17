@@ -1,6 +1,9 @@
-import { useRef, useState } from "react";
-import { Moon, Sun, Plus, Trash2, Upload, X, Sparkles } from "lucide-react";
-import { Scene, THEMES } from "@/components/scenes/Scene";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import {
+  ArrowLeft, ArrowRight, BookOpen, Check, ChevronLeft, ChevronRight,
+  ImagePlus, Moon, Plus, Search, Sparkles, Sun, Trash2, Upload, X,
+} from "lucide-react";
+import { Scene, SCENE_ART, THEMES } from "@/components/scenes/Scene";
 import { MAX_TEXT_CHARS, type Book, type Prefs, type ThemeId } from "@/lib/storage";
 
 type Props = {
@@ -11,278 +14,312 @@ type Props = {
   onDemo: () => void;
   onOpen: (b: Book) => void;
   onDelete: (id: string) => void;
-  onSave: (title: string, text: string) => Promise<void>;
+  onSave: (title: string, text: string, coverImage?: string) => Promise<void>;
+  onCover?: (id: string, coverImage?: string) => Promise<void>;
 };
 
-export function Library({
-  prefs,
-  setPrefs,
-  books,
-  error,
-  onDemo,
-  onOpen,
-  onDelete,
-  onSave,
-}: Props) {
-  const [adding, setAdding] = useState(false);
-  return (
-    <div className="page-in relative min-h-screen">
-      <div className="fixed inset-0">
-        <Scene
-          theme={prefs.theme}
-          mode={prefs.mode}
-          intensity={prefs.intensity}
-          reduce={prefs.reduceMotion}
-        />
-        <div className="veil absolute inset-0" />
-      </div>
+/** Never upload source images. Resize a local JPEG/PNG/WebP before storing it. */
+async function prepareCover(file: File): Promise<string> {
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 8_000_000)
+    throw new Error("Choose a JPEG, PNG or WebP cover under 8 MB.");
+  const url = URL.createObjectURL(file);
+  try {
+    const image = new Image();
+    image.src = url;
+    await image.decode();
+    const canvas = document.createElement("canvas");
+    canvas.width = 660;
+    canvas.height = 940;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Your browser cannot prepare this cover.");
+    const scale = Math.max(canvas.width / image.width, canvas.height / image.height);
+    const width = image.width * scale;
+    const height = image.height * scale;
+    ctx.drawImage(image, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
+    const result = canvas.toDataURL("image/jpeg", 0.8);
+    if (result.length > 2_500_000) throw new Error("The optimized cover is too large.");
+    return result;
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
 
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-[40rem] flex-col px-6 pb-16">
-        <header className="flex items-center justify-between pt-6">
-          <span className="kicker text-foreground">Katha</span>
-          <button
-            onClick={() => setPrefs({ ...prefs, mode: prefs.mode === "dark" ? "light" : "dark" })}
-            aria-label="Toggle day or night"
-            className="glass btn-quiet grid h-10 w-10 place-items-center rounded-full"
-          >
-            {prefs.mode === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </button>
+function CoverArt({ book }: { book: Book }) {
+  const variants: Array<"lotus" | "sakura"> = ["lotus", "sakura", "lotus", "sakura"];
+  const number = Array.from(book.title).reduce((n, c) => n + (c.codePointAt(0) || 0), 0);
+  const theme = variants[number % variants.length];
+  const background = book.coverImage || SCENE_ART[theme].light;
+  return (
+    <>
+      <span className="katha-cover-photo" style={{ backgroundImage: 'url("' + background + '")' }} />
+      <span className="katha-cover-tint" />
+      <span className="katha-cover-ornament" aria-hidden="true">✦</span>
+      <span className="katha-cover-title">
+        <small>KATHA EDITION</small>
+        <strong>{book.title}</strong>
+        <small>A living reader</small>
+      </span>
+      <span className="katha-cover-pages" />
+    </>
+  );
+}
+
+export function Library({ prefs, setPrefs, books, error, onDemo, onOpen, onDelete, onSave, onCover }: Props) {
+  const [adding, setAdding] = useState(false);
+  const [coverFor, setCoverFor] = useState<string | null>(null);
+  const [searching, setSearching] = useState(false);
+  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState(0);
+  const touchX = useRef<number | null>(null);
+  const shelfRef = useRef<HTMLElement>(null);
+  const stylesRef = useRef<HTMLElement>(null);
+  const matches = useMemo(() => books.filter((b) =>
+    b.title.toLowerCase().includes(search.trim().toLowerCase())), [books, search]);
+  useEffect(() => setSelected((i) => Math.min(i, Math.max(0, matches.length - 1))), [matches.length]);
+  const activeBook = matches[selected] || null;
+  const coverBook = books.find((b) => b.id === coverFor) || null;
+  const turn = (delta: number) => {
+    if (matches.length > 1) setSelected((i) => (i + delta + matches.length) % matches.length);
+  };
+  const changeStyles = () => setPrefs({
+    ...prefs, theme: prefs.theme === "lotus" ? "sakura" : "lotus",
+  });
+  const scrollTo = (element: HTMLElement | null) =>
+    element?.scrollIntoView({ behavior: prefs.reduceMotion ? "instant" : "smooth" });
+
+  return (
+    <div className="katha-home page-in relative min-h-screen" data-world={prefs.theme}>
+      <div className="fixed inset-0 pointer-events-none">
+        <Scene theme={prefs.theme} mode={prefs.mode} intensity={prefs.intensity} reduce={prefs.reduceMotion}/>
+      </div>
+      <div className="katha-home-shade pointer-events-none fixed inset-0" />
+      <main className="katha-home-content relative z-10 mx-auto flex min-h-screen max-w-[1180px] flex-col">
+        <header className="katha-main-header">
+          <div className="katha-brand" aria-label="Katha, a living reader">
+            <span className="katha-lotus-mark" aria-hidden="true">✧</span>
+            <div><span className="katha-brand-title">Katha</span><span className="katha-brand-line">A living reader</span></div>
+          </div>
+          <div className="katha-header-actions">
+            {searching && <input autoFocus className="katha-search" aria-label="Search your books"
+              placeholder="Search your books" value={search} onChange={(e) => setSearch(e.target.value)}/>}
+            <button className="katha-round" aria-label={searching ? "Close search" : "Search books"}
+              onClick={() => { setSearching(!searching); setSearch(""); }}>
+              {searching ? <X size={19}/> : <Search size={19}/>}
+            </button>
+            <button className="katha-round" aria-label="Toggle day or night"
+              onClick={() => setPrefs({ ...prefs, mode: prefs.mode === "dark" ? "light" : "dark" })}>
+              {prefs.mode === "dark" ? <Sun size={19}/> : <Moon size={19}/>}
+            </button>
+          </div>
         </header>
 
-        <section className="mt-[30vh] rise-in">
-          <p className="kicker text-muted-foreground">A living reader</p>
-          <h1 className="mt-3 font-display text-[2.7rem] font-medium leading-[1.02] sm:text-6xl">
-            Read by the light <em className="font-normal">of a moving page.</em>
-          </h1>
-          <p className="mt-4 max-w-sm font-read text-[1.02rem] leading-relaxed text-muted-foreground">
-            Words warm beneath a ribbon of light while a painted world breathes quietly around them.
-          </p>
-          <div className="mt-7 flex flex-wrap items-center gap-3">
-            <button
-              onClick={onDemo}
-              className="btn-ember inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold"
-            >
-              <Sparkles className="h-4 w-4" /> Try the ribbon
+        <section className="katha-hero rise-in">
+          <span className="katha-overline">A READING SANCTUARY</span>
+          <h1>Read by the light<br/>of <em>a moving page.</em></h1>
+          <p>A book becomes a world. Let its pages unfold around you in light, quiet and motion.</p>
+          <div className="katha-hero-buttons">
+            <button className="katha-primary-action" onClick={changeStyles}>
+              <Sparkles size={17}/> Try different styles <ArrowRight size={18}/>
             </button>
-            <span className="text-xs text-muted-foreground">Silent demo · no real audio</span>
-          </div>
-        </section>
-
-        <section className="mt-14 rise-in" style={{ animationDelay: "0.15s" }}>
-          <h2 className="kicker text-muted-foreground">Worlds</h2>
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            {(Object.keys(THEMES) as ThemeId[]).map((id) => {
-              const on = prefs.theme === id;
-              return (
-                <button
-                  key={id}
-                  onClick={() => setPrefs({ ...prefs, theme: id })}
-                  aria-pressed={on}
-                  className={`group overflow-hidden rounded-[1.25rem] text-left transition-transform active:scale-[0.98] ${on ? "ring-2 ring-primary" : "ring-1 ring-border"}`}
-                >
-                  <div className="h-36">
-                    <Scene
-                      theme={id}
-                      mode={prefs.mode}
-                      intensity={prefs.intensity}
-                      reduce={prefs.reduceMotion}
-                      mini
-                    />
-                  </div>
-                  <div className="glass border-0 px-3 py-2.5">
-                    <div className="font-display text-lg leading-tight">{THEMES[id].name}</div>
-                    <div className="text-[0.7rem] text-muted-foreground">{THEMES[id].line}</div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </section>
-
-        <section className="mt-12 rise-in" style={{ animationDelay: "0.25s" }}>
-          <div className="flex items-center justify-between">
-            <h2 className="kicker text-muted-foreground">Your shelf</h2>
-            <button
-              onClick={() => setAdding(true)}
-              className="glass btn-quiet inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold"
-            >
-              <Plus className="h-3.5 w-3.5" /> Add text
+            <button className="katha-outline-action"
+              onClick={() => activeBook ? setCoverFor(activeBook.id) : setAdding(true)}>
+              <ImagePlus size={18}/> Add book cover
             </button>
           </div>
-          {error && (
-            <p role="alert" className="mt-3 text-sm text-destructive">
-              {error}
-            </p>
-          )}
-          <ul className="mt-3 divide-y divide-border border-y border-border">
-            {books.length === 0 && (
-              <li className="py-6 font-read italic text-muted-foreground">
-                The shelf is empty. Paste a passage or open a .txt file — it stays on this device.
-              </li>
-            )}
-            {books.map((b) => {
-              const words = b.text.split(/\s+/).filter(Boolean).length;
-              const pct = Math.min(100, Math.round((b.progress / Math.max(1, words - 1)) * 100));
-              return (
-                <li key={b.id} className="flex items-center gap-3 py-4">
-                  <button onClick={() => onOpen(b)} className="min-w-0 flex-1 text-left">
-                    <div className="truncate font-display text-xl leading-tight">{b.title}</div>
-                    <div className="mt-1.5 flex items-center gap-3 text-[0.7rem] text-muted-foreground">
-                      <span>{words.toLocaleString()} words</span>
-                      <span className="h-px flex-1 bg-border">
-                        <span className="block h-px bg-primary" style={{ width: `${pct}%` }} />
-                      </span>
-                      <span className="tabular-nums">{pct}%</span>
-                    </div>
-                  </button>
-                  <button
-                    aria-label={`Delete ${b.title}`}
-                    onClick={() => onDelete(b.id)}
-                    className="grid h-9 w-9 place-items-center rounded-full text-muted-foreground"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </li>
-              );
+        </section>
+
+        <section className="katha-world-section rise-in" ref={stylesRef} aria-label="Reading worlds">
+          <div className="katha-section-head">
+            <div><span className="katha-overline">CHOOSE YOUR ATMOSPHERE</span><h2>Worlds</h2></div>
+            <span className="katha-hint">Two places. Countless stories.</span>
+          </div>
+          <div className="katha-world-grid">
+            {(Object.keys(THEMES) as ThemeId[]).map((id) => (
+              <button key={id} type="button" aria-label={THEMES[id].name}
+                aria-pressed={prefs.theme === id}
+                className={"katha-world-card " + (prefs.theme === id ? "is-current" : "")}
+                onClick={() => setPrefs({ ...prefs, theme: id })}>
+                <span className="katha-world-thumb" style={{ backgroundImage: 'url("' + SCENE_ART[id].light + '")' }}/>
+                <span className="katha-world-meta">
+                  <span className="katha-world-icon">{id === "lotus" ? "✿" : "❀"}</span>
+                  <span><strong>{THEMES[id].name}</strong><small>{THEMES[id].line}</small></span>
+                </span>
+                <span className="katha-world-check">{prefs.theme === id ? <Check size={17}/> : <ArrowRight size={17}/>}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section ref={shelfRef} className="katha-shelf-section rise-in" aria-label="Your books">
+          <div className="katha-section-head">
+            <div><span className="katha-overline">PICK UP A STORY</span><h2>Your shelf</h2></div>
+            <button className="katha-small-action" onClick={() => setAdding(true)}><Plus size={16}/> Add text</button>
+          </div>
+          {error && <p role="alert" className="katha-form-error">{error}</p>}
+          {search.trim() && !matches.length && <p className="katha-shelf-caption">No books match that search.</p>}
+          <div className="katha-cover-stage" role="region" aria-label="Swipe book shelf" tabIndex={0}
+            onKeyDown={(e) => { if(e.key === "ArrowLeft") turn(-1); if(e.key === "ArrowRight") turn(1); }}
+            onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
+            onTouchEnd={(e) => { const start = touchX.current; touchX.current = null;
+              if(start !== null) { const dx = e.changedTouches[0].clientX - start; if(Math.abs(dx) > 42) turn(dx < 0 ? 1 : -1); } }}>
+            {!matches.length && !search.trim() ? (
+              <button className="katha-book-card katha-book-card--sample" onClick={onDemo}
+                aria-label="Open sample reading">
+                <span className="katha-cover-photo" style={{ backgroundImage: 'url("' + SCENE_ART[prefs.theme].light + '")' }}/>
+                <span className="katha-cover-tint"/>
+                <span className="katha-cover-ornament" aria-hidden="true">✦</span>
+                <span className="katha-cover-title"><small>WELCOME TO KATHA</small><strong>A first light</strong><small>Open sample reading</small></span>
+                <span className="katha-cover-pages"/>
+              </button>
+            ) : matches.map((book, index) => {
+              let offset = index - selected;
+              if(offset > matches.length / 2) offset -= matches.length;
+              if(offset < -matches.length / 2) offset += matches.length;
+              const visible = Math.abs(offset) < 3;
+              return <button key={book.id}
+                className={"katha-book-card " + (offset === 0 ? "katha-book-card--active" : "")}
+                style={{ "--book-offset": offset, zIndex: 10 - Math.abs(offset), visibility: visible ? "visible" : "hidden" } as CSSProperties}
+                tabIndex={visible ? 0 : -1}
+                aria-label={(offset === 0 ? "Open " : "Select ") + book.title}
+                onClick={() => offset === 0 ? onOpen(book) : setSelected(index)}>
+                <CoverArt book={book}/>
+              </button>;
             })}
-          </ul>
+          </div>
+          <div className="katha-shelf-controls">
+            <button aria-label="Previous book" className="katha-carousel-arrow" disabled={matches.length < 2}
+              onClick={() => turn(-1)}><ChevronLeft size={20}/></button>
+            <div className="katha-shelf-progress">
+              {activeBook ? <><strong>{activeBook.title}</strong><span>{selected + 1} / {matches.length} · Swipe to browse · Tap to open</span></>
+                : <><strong>Your next chapter begins here</strong><span>Add a passage or open the sample above.</span></>}
+            </div>
+            <button aria-label="Next book" className="katha-carousel-arrow" disabled={matches.length < 2}
+              onClick={() => turn(1)}><ChevronRight size={20}/></button>
+          </div>
+          {activeBook && <div className="katha-selected-actions">
+            <button onClick={() => onOpen(activeBook)}><BookOpen size={16}/> Continue reading</button>
+            <button onClick={() => setCoverFor(activeBook.id)}><ImagePlus size={16}/> Change cover</button>
+            <button aria-label={"Delete " + activeBook.title} onClick={() => onDelete(activeBook.id)}>
+              <Trash2 size={16}/> Remove
+            </button>
+          </div>}
         </section>
 
-        <section className="mt-12 rise-in text-sm" style={{ animationDelay: "0.35s" }}>
-          <h2 className="kicker text-muted-foreground">What works today</h2>
-          <dl className="mt-3 grid grid-cols-[1fr_auto] gap-y-2 text-[0.82rem]">
-            <dt>Paste text, open .txt</dt>
-            <dd className="text-primary">Ready</dd>
-            <dt>Saved on this device</dt>
-            <dd className="text-primary">Ready</dd>
-            <dt>PDF text import</dt>
-            <dd className="text-muted-foreground">Coming later</dd>
-            <dt>Sanskrit image OCR</dt>
-            <dd className="text-muted-foreground">Not available</dd>
-            <dt>Neural voice</dt>
-            <dd className="text-muted-foreground">Not connected</dd>
-          </dl>
+        <section className="katha-discover glass rise-in" aria-label="What you can do">
+          <h2>What works today</h2>
+          <div className="katha-feature-grid">
+            <button onClick={() => activeBook ? onOpen(activeBook) : onDemo()}>
+              <BookOpen size={21}/><strong>Continue reading</strong><span>Return to your story</span><ArrowRight size={15}/>
+            </button>
+            <button onClick={() => scrollTo(stylesRef.current)}>
+              <Sparkles size={21}/><strong>Discover new worlds</strong><span>Find your atmosphere</span><ArrowRight size={15}/>
+            </button>
+            <button onClick={() => setAdding(true)}>
+              <ImagePlus size={21}/><strong>Create a cover</strong><span>Designed locally by Katha</span><ArrowRight size={15}/>
+            </button>
+          </div>
+          <p className="katha-disclosure">Silent reading preview · books and notes stay on this device · real narration is not connected yet</p>
         </section>
-      </div>
+        <nav className="katha-bottom-nav" aria-label="Katha navigation">
+          <button onClick={() => window.scrollTo({top:0,behavior:prefs.reduceMotion?"instant":"smooth"})}>⌂ <span>Home</span></button>
+          <button onClick={() => scrollTo(shelfRef.current)}><BookOpen size={21}/> <span>Library</span></button>
+          <button onClick={() => scrollTo(stylesRef.current)}><Sparkles size={21}/> <span>Worlds</span></button>
+          <button onClick={() => setAdding(true)}><Plus size={21}/> <span>New</span></button>
+        </nav>
+      </main>
 
-      {adding && (
-        <AddSheet
-          onClose={() => setAdding(false)}
-          onSave={async (t, x) => {
-            await onSave(t, x);
-            setAdding(false);
-          }}
-        />
-      )}
+      {adding && <AddSheet onClose={() => setAdding(false)}
+        onSave={async (title,text,cover) => { await onSave(title,text,cover); setAdding(false); }}/>}
+      {coverBook && <CoverSheet book={coverBook} onClose={() => setCoverFor(null)}
+        onSave={async (image) => {
+          if(!onCover) throw new Error("Cover editing is unavailable.");
+          await onCover(coverBook.id,image); setCoverFor(null);
+        }}/>}
     </div>
   );
 }
 
-function AddSheet({
-  onClose,
-  onSave,
-}: {
+function AddSheet({onClose,onSave}: {
   onClose: () => void;
-  onSave: (title: string, text: string) => Promise<void>;
+  onSave: (title: string, text: string, cover?: string) => Promise<void>;
 }) {
-  const [title, setTitle] = useState("");
-  const [text, setText] = useState("");
-  const [err, setErr] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  const onFile = async (f: File | undefined) => {
+  const [title,setTitle] = useState("");
+  const [text,setText] = useState("");
+  const [cover,setCover] = useState<string | undefined>();
+  const [err,setErr] = useState<string | null>(null);
+  const [busy,setBusy] = useState(false);
+  const textRef = useRef<HTMLInputElement>(null);
+  const coverRef = useRef<HTMLInputElement>(null);
+  const onTextFile = async (file?:File) => {
     setErr(null);
-    if (!f) return;
-    if (/\.pdf$/i.test(f.name) || f.type === "application/pdf")
+    if(!file) return;
+    if(/\.pdf$/i.test(file.name) || file.type==="application/pdf")
       return setErr("PDF import is coming later. Please use a .txt file or paste text.");
-    if (!/\.txt$/i.test(f.name) && !f.type.startsWith("text/"))
+    if(!/\.txt$/i.test(file.name) && !file.type.startsWith("text/"))
       return setErr("Only plain .txt files are supported right now.");
-    if (f.size > 3_000_000) return setErr("That file is over 3 MB. Try a shorter text.");
+    if(file.size>3_000_000) return setErr("That file is over 3 MB. Try a shorter text.");
     try {
-      const content = await f.text();
-      if (!content.trim()) return setErr("That file appears to be empty.");
-      setText(content);
-      if (!title) setTitle(f.name.replace(/\.txt$/i, ""));
-    } catch {
-      setErr("Could not read that file.");
-    }
+      const content = await file.text();
+      if(!content.trim()) return setErr("That file appears to be empty.");
+      setText(content); if(!title) setTitle(file.name.replace(/\.txt$/i,""));
+    } catch { setErr("Could not read that file."); }
   };
-
+  const onCoverFile = async (file?:File) => {
+    if(!file) return;
+    try { setErr(null); setCover(await prepareCover(file)); }
+    catch(e) { setErr(e instanceof Error ? e.message : "Could not open this cover."); }
+  };
   const save = async () => {
     setErr(null);
-    if (!text.trim()) return setErr("Add some text first.");
-    if (text.length > MAX_TEXT_CHARS)
-      return setErr("That text is too long (over 3 million characters). Try a shorter passage.");
+    if(!text.trim()) return setErr("Add some text first.");
+    if(text.length>MAX_TEXT_CHARS) return setErr("That text is too long (over 3 million characters). Try a shorter passage.");
     setBusy(true);
-    try {
-      await onSave(title.trim() || text.trim().split(/\s+/).slice(0, 5).join(" "), text);
-    } catch (e) {
-      setErr(e instanceof Error ? e.message : "Could not save on this device.");
-      setBusy(false);
-    }
+    try { await onSave(title.trim()||text.trim().split(/\s+/).slice(0,5).join(" "),text,cover); }
+    catch(e) { setErr(e instanceof Error?e.message:"Could not save on this device."); setBusy(false); }
   };
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center">
-      <button
-        aria-label="Close"
-        onClick={onClose}
-        className="fade-in absolute inset-0 bg-background/60"
-      />
-      <div className="sheet-in ink-panel relative w-full max-w-[40rem] rounded-t-[1.75rem] px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5">
-        <div className="flex items-center justify-between">
-          <h3 className="font-display text-2xl">Add to your shelf</h3>
-          <button
-            aria-label="Close"
-            onClick={onClose}
-            className="btn-quiet grid h-9 w-9 place-items-center rounded-full"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Title"
-          className="mt-4 w-full border-b border-border bg-transparent py-2 font-display text-xl outline-none placeholder:text-muted-foreground"
-        />
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Paste a passage, a chapter, a verse…"
-          rows={8}
-          className="mt-4 w-full resize-none rounded-xl border border-border bg-transparent p-3 font-read text-base leading-relaxed outline-none placeholder:text-muted-foreground focus:border-primary"
-        />
-        <input
-          ref={fileRef}
-          type="file"
-          accept=".txt,text/plain"
-          className="hidden"
-          onChange={(e) => onFile(e.target.files?.[0])}
-        />
-        {err && (
-          <p role="alert" className="mt-2 text-sm text-destructive">
-            {err}
-          </p>
-        )}
-        <div className="mt-4 flex items-center gap-3">
-          <button
-            onClick={() => fileRef.current?.click()}
-            className="btn-quiet inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm"
-          >
-            <Upload className="h-4 w-4" /> Open .txt
-          </button>
-          <span className="text-[0.7rem] text-muted-foreground">PDF · coming later</span>
-          <button
-            disabled={busy}
-            onClick={save}
-            className="btn-ember ml-auto rounded-full px-6 py-2.5 text-sm font-semibold disabled:opacity-60"
-          >
-            {busy ? "Saving…" : "Save"}
-          </button>
-        </div>
+  return <div className="katha-modal-backdrop">
+    <button className="katha-modal-scrim" onClick={onClose} aria-label="Close"/>
+    <section role="dialog" aria-modal="true" aria-label="Add a book" className="katha-modal">
+      <div className="katha-modal-head"><div><span>YOUR PERSONAL LIBRARY</span><h2>Add a book</h2></div>
+        <button onClick={onClose} aria-label="Close" className="katha-round"><X size={19}/></button>
       </div>
-    </div>
-  );
+      <p>Katha automatically designs a cover from your title. Or add your own image.</p>
+      <input value={title} onChange={(e)=>setTitle(e.target.value)} placeholder="Title" aria-label="Book title" className="katha-field katha-field--title"/>
+      <textarea value={text} onChange={(e)=>setText(e.target.value)} placeholder="Paste a passage, a chapter, a verse…" rows={6} className="katha-field katha-text-area"/>
+      <input type="file" accept=".txt,text/plain" ref={textRef} className="hidden" onChange={(e)=>void onTextFile(e.target.files?.[0])}/>
+      <input type="file" accept="image/png,image/jpeg,image/webp" ref={coverRef} className="hidden" onChange={(e)=>void onCoverFile(e.target.files?.[0])}/>
+      {cover && <img className="katha-cover-preview" src={cover} alt="Your selected cover"/>}
+      <div className="katha-modal-actions">
+        <button className="katha-ghost-button" onClick={()=>textRef.current?.click()}><Upload size={16}/> Open .txt</button>
+        <button className="katha-ghost-button" onClick={()=>coverRef.current?.click()}><ImagePlus size={16}/> {cover?"Change cover":"Upload cover"}</button>
+      </div>
+      <p className="katha-modal-note">TXT only · 3 MB limit · covers stay on this device</p>
+      {err && <p role="alert" className="katha-form-error">{err}</p>}
+      <button disabled={busy} className="katha-primary-action katha-save-button" onClick={()=>void save()}>{busy?"Saving…":"Save"}</button>
+    </section>
+  </div>;
+}
+
+function CoverSheet({book,onClose,onSave}: { book:Book;onClose:()=>void;onSave:(image?:string)=>Promise<void>; }) {
+  const fileRef=useRef<HTMLInputElement>(null);
+  const [image,setImage]=useState(book.coverImage);
+  const [err,setErr]=useState<string|null>(null);
+  const [busy,setBusy]=useState(false);
+  const save=async()=>{setBusy(true);try{await onSave(image);}catch(e){setErr(e instanceof Error?e.message:"Could not save cover.");setBusy(false);}};
+  return <div className="katha-modal-backdrop">
+    <button className="katha-modal-scrim" onClick={onClose} aria-label="Close"/>
+    <section role="dialog" aria-modal="true" aria-label="Change book cover" className="katha-modal">
+      <div className="katha-modal-head"><div><span>COVER STUDIO</span><h2>{book.title}</h2></div><button className="katha-round" onClick={onClose} aria-label="Close"><X size={18}/></button></div>
+      <p>Auto-designed covers use Katha's world art. Upload a personal image to make it yours.</p>
+      <div className="katha-cover-sample"><CoverArt book={{...book,coverImage:image}}/></div>
+      <input type="file" accept="image/png,image/jpeg,image/webp" ref={fileRef} className="hidden"
+        onChange={async(e)=>{const f=e.target.files?.[0];if(!f)return;try{setImage(await prepareCover(f));setErr(null);}catch(ex){setErr(ex instanceof Error?ex.message:"Invalid cover.");}}}/>
+      <div className="katha-modal-actions">
+        <button className="katha-ghost-button" onClick={()=>fileRef.current?.click()}><ImagePlus size={17}/> Choose image</button>
+        <button className="katha-ghost-button" onClick={()=>setImage(undefined)}><ArrowLeft size={16}/> Auto-design</button>
+      </div>
+      {err && <p role="alert" className="katha-form-error">{err}</p>}
+      <button disabled={busy} className="katha-primary-action katha-save-button" onClick={()=>void save()}>{busy?"Saving…":"Save cover"}</button>
+    </section>
+  </div>;
 }
