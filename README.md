@@ -1,42 +1,45 @@
 # Katha — Living Reader
 
-A mobile-first English and Sanskrit reading experience set inside animated Lotus Lake and Sakura Breeze scenes, with a flowing-light ribbon that highlights passages as you read.
+A mobile-first English and Sanskrit reader with atmospheric, artwork-backed worlds, an animated bookshelf and on-device annotation tools.
 
-## Features
-- English and Sanskrit plain-text reading with daylight/night modes and two animated canvas worlds.
-- Silent reading preview with play/pause, seek, sentence navigation, repeat, pace, text size and motion settings.
-- Import plain `.txt` files or paste text; store books and reading progress **on this device** using IndexedDB. Preferences use localStorage.
-- Reduced-motion mode, wrap-safe long text and input/storage hardening.
+## What works today
 
-**Limits:** This app does not currently provide narration, neural text-to-speech, PDF import, image OCR, sign-in or cloud sync. Saving data on one device is not a backup.
+- **Cinematic worlds:** Lotus Lake (day and moonlit night) and Sakura Mountain, with subtle parallax, lighting, and reduced-motion support. This frontend uses original/photographic scene assets, **not primitive canvas-generated landscapes**.
+- **A swipeable shelf:** Book-cover cards glide forward, with keyboard/arrow/touch controls. Selecting a book opens the reader.
+- **Book covers:** Katha creates a reusable **local title-and-scene cover design automatically**. You can upload your own JPEG, PNG or WebP cover and it is optimized on-device. The automatic cover is a designed template, **not an AI image-generation model**.
+- **Reading workspace:** Silent animated ribbon, progress, sentence navigation, pace and daylight/night modes.
+- **Parallel notes:** Comment on highlighted words, apply bold/italic/highlight, erase marks, sketch or draw with a finger/stylus, and make a simple flow diagram. Notes stay with the book on this device.
+- **Private library:** Import plain `.txt` files or paste text; save reading position, cover, and annotations using IndexedDB. Preferences use localStorage.
+
+**Limits:** No real narrated audio, AI-generated bespoke book art, PDF text import, image OCR, accounts, or cloud sync. The 4K Sakura photo is a portrait crop of a high-resolution original; the owner-supplied lotus paintings are lower-resolution than native 4K. See [ARTWORK_CREDITS.md](ARTWORK_CREDITS.md).
 
 ## Local development
 
-Requires Bun and Node-compatible tooling:
+Requires Bun:
 
 ```sh
 bun install --frozen-lockfile
 bun run dev
 bun run test
+bunx tsc --noEmit
+bunx eslint src
+bunx prettier --check src
+bun audit --prod
 bun run build
 ```
 
-The app uses React, TypeScript, TanStack Start, Vite and Tailwind CSS with Lovable's TanStack configuration.
+For production-style Chromium verification, see `.github/workflows/browser-verification.yml`; it runs a local Cloudflare Worker through Wrangler, then browser flow, storage, annotation and accessibility checks.
 
-## QA and security
+## Verification and privacy
 
-`src/test/security-hardening.test.tsx` uses **inert strings only**, including script-like text and a fake executable filename, to test input handling. It does not execute malware.
+See [VERIFICATION.md](VERIFICATION.md) for checks and **unverified physical-device constraints**. Test suites include harmless script-looking sample content; they never run malware.
 
-See [KATHA_HANDOFF.md](KATHA_HANDOFF.md) for the original project scope, test records, known limitations and changes made in the November 2026 audit.
+Book text, user covers, and annotations remain on the reader's device. Katha may still fetch Google Fonts and reveal ordinary request metadata to that font provider. Never assume browser storage is a backup; it can be cleared or evicted.
 
 ## Source provenance
 
-Imported from Katha Living Reader in Lovable at source commit `86f26d8c236063096b07646cc230a8a85f915a7e`. The original binary `favicon.ico` could not be transferred through the source API; this GitHub version includes a lightweight SVG icon instead. This is a **one-time source import**, not evidence of ongoing GitHub–Lovable automatic synchronization.
-
-## Privacy
-
-Books are stored locally in your browser, not uploaded to a Katha account. Browser/device storage can be cleared or evicted. Avoid pasting secrets or sensitive documents into services you do not trust.
+Initially imported from Katha Living Reader in Lovable, source commit `86f26d8c236063096b07646cc230a8a85f915a7e`. This repo is not automatically synchronized back to the original Lovable published site. `main` represents the GitHub version; the published Lovable URL may lag behind.
 
 ## Contributions
 
-Bug reports and test improvements are welcome. Please include steps to reproduce, browser/device details, and whether the issue affects the reader, storage or scene rendering.
+Reproduce issues with device, viewport, reduced-motion settings and steps. Do not upload anyone's private books or personal annotations to issue reports.

@@ -1,6 +1,23 @@
 export type ThemeId = "lotus" | "sakura";
 export type Mode = "dark" | "light";
-export type Book = { id: string; title: string; text: string; createdAt: number; progress: number };
+export type Annotation = {
+  id: string;
+  kind: "bold" | "italic" | "highlight" | "comment" | "drawing" | "diagram";
+  start?: number;
+  end?: number;
+  quote?: string;
+  text?: string;
+  image?: string;
+};
+export type Book = {
+  id: string;
+  title: string;
+  text: string;
+  createdAt: number;
+  progress: number;
+  coverImage?: string | undefined;
+  annotations?: Annotation[];
+};
 export type Prefs = {
   theme: ThemeId;
   mode: Mode;
@@ -124,6 +141,34 @@ export async function updateProgress(id: string, progress: number) {
     req.onsuccess = () => {
       const book = req.result;
       if (book) s.put({ ...book, progress });
+    };
+    return req;
+  });
+}
+
+/** Keep custom covers and reader notes in the same transaction-safe book record. */
+export async function updateBookCover(id: string, coverImage?: string) {
+  if (
+    coverImage &&
+    (!/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(coverImage) ||
+      coverImage.length > 2_500_000)
+  )
+    throw new Error("Only optimized JPEG, PNG or WebP covers can be saved.");
+  await tx<Book | undefined>("readwrite", (store) => {
+    const req = store.get(id) as IDBRequest<Book | undefined>;
+    req.onsuccess = () => {
+      if (req.result) store.put({ ...req.result, coverImage });
+    };
+    return req;
+  });
+}
+
+export async function updateBookAnnotations(id: string, annotations: Annotation[]) {
+  if (annotations.length > 200) throw new Error("This book has reached its 200 annotation limit.");
+  await tx<Book | undefined>("readwrite", (store) => {
+    const req = store.get(id) as IDBRequest<Book | undefined>;
+    req.onsuccess = () => {
+      if (req.result) store.put({ ...req.result, annotations });
     };
     return req;
   });

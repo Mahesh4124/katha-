@@ -11,7 +11,14 @@ import {
   Plus,
 } from "lucide-react";
 import { Scene, THEMES } from "@/components/scenes/Scene";
-import type { Prefs, ThemeId } from "@/lib/storage";
+import { updateBookAnnotations, type Annotation, type Prefs, type ThemeId } from "@/lib/storage";
+import {
+  AnnotationToolbar,
+  ParallelNotes,
+  DrawingPad,
+  DiagramPad,
+  type TextAnchor,
+} from "./AnnotationTools";
 import { FlowingLightRibbon } from "./FlowingLightRibbon";
 import { buildDoc, Clock, indexAt, type Doc } from "./text";
 
@@ -21,9 +28,11 @@ export type ReaderBook = {
   text: string;
   progress?: number;
   demo?: boolean;
+  annotations?: Annotation[];
 };
 
-function Paras({ doc, base }: { doc: Doc; base: boolean }) {
+type WordMarks = Map<number, { bold: boolean; italic: boolean; highlight: boolean }>;
+function Paras({ doc, base, marks }: { doc: Doc; base: boolean; marks: WordMarks }) {
   return (
     <>
       {doc.paras.map((p, i) => (
@@ -34,7 +43,19 @@ function Paras({ doc, base }: { doc: Doc; base: boolean }) {
         >
           {p.pieces.map((pc, j) =>
             pc.w ? (
-              <span key={j} data-w={pc.w.i} className={base ? "cursor-pointer" : undefined}>
+              <span
+                key={j}
+                data-w={pc.w.i}
+                className={[
+                  "reader-word",
+                  base ? "cursor-pointer" : "",
+                  marks.get(pc.w.i)?.bold ? "reader-word--bold" : "",
+                  marks.get(pc.w.i)?.italic ? "reader-word--italic" : "",
+                  marks.get(pc.w.i)?.highlight ? "reader-word--highlight" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
                 {pc.w.text}
               </span>
             ) : (
@@ -76,6 +97,28 @@ export function Reader({
   const [repeat, setRepeat] = useState(false);
   const repeatRef = useRef(repeat);
   repeatRef.current = repeat;
+  const [annotations, setAnnotations] = useState<Annotation[]>(() => book.annotations || []);
+  const [notesOpen, setNotesOpen] = useState(false);
+  const [commentSignal, setCommentSignal] = useState(0);
+  const [anchor, setAnchor] = useState<TextAnchor | null>(null);
+  const [drawingMode, setDrawingMode] = useState<"draw" | "sketch" | null>(null);
+  const [diagramOpen, setDiagramOpen] = useState(false);
+  const [annotationError, setAnnotationError] = useState<string | null>(null);
+  const marks = useMemo<WordMarks>(() => {
+    const result: WordMarks = new Map();
+    for (const note of annotations) {
+      if (note.kind !== "bold" && note.kind !== "italic" && note.kind !== "highlight") continue;
+      if (!Number.isInteger(note.start) || !Number.isInteger(note.end)) continue;
+      const first = Math.max(0, note.start as number);
+      const last = Math.min(doc.tokens.length - 1, first + 499, note.end as number);
+      for (let i = first; i <= last; i++) {
+        const current = result.get(i) || { bold: false, italic: false, highlight: false };
+        current[note.kind] = true;
+        result.set(i, current);
+      }
+    }
+    return result;
+  }, [annotations, doc.tokens.length]);
 
   useEffect(() => {
     clock.rate = prefs.rate;
@@ -164,7 +207,89 @@ export function Reader({
     clock.seek(token.start);
     setT(clock.t);
   };
+  const captureSelection = () => {
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed || !selection.toString().trim()) return;
+    const wordIndex = (node: Node | null) => {
+      const element = node instanceof HTMLElement ? node : node?.parentElement;
+      const word = element?.closest<HTMLElement>("[data-w]");
+      return word ? Number(word.dataset.w) : NaN;
+    };
+    const a = wordIndex(selection.anchorNode);
+    const b = wordIndex(selection.focusNode);
+    if (!Number.isInteger(a) || !Number.isInteger(b)) return;
+    const first = Math.min(a, b);
+    const last = Math.min(doc.tokens.length - 1, first + 499, Math.max(a, b));
+    setAnchor({
+      start: first,
+      end: last,
+      quote: doc.tokens
+        .slice(first, last + 1)
+        .map((w) => w.text)
+        .join(" ")
+        .slice(0, 350),
+    });
+  };
+  const currentAnchor = (): TextAnchor => {
+    const current = doc.tokens[Math.max(0, indexAt(doc.tokens, clock.now()))];
+    return anchor || { start: current?.i || 0, end: current?.i || 0, quote: current?.text || "" };
+  };
+  const persist = async (next: Annotation[]) => {
+    if (next.length > 200) throw new Error("This book has reached its annotation limit.");
+    const previous = annotations;
+    setAnnotations(next);
+    setAnnotationError(null);
+    try {
+      if (book.id) await updateBookAnnotations(book.id, next);
+    } catch (error) {
+      setAnnotations(previous);
+      setAnnotationError(error instanceof Error ? error.message : "Could not save annotations.");
+      throw error;
+    }
+  };
+  const addAnnotation = async (kind: Annotation["kind"], text?: string, image?: string) => {
+    if (kind === "drawing" && image && image.length > 600_000)
+      throw new Error("This drawing is too large to save.");
+    const at = currentAnchor();
+    const note: Annotation = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2),
+      kind,
+      start: at.start,
+      end: at.end,
+      quote: at.quote,
+      ...(text ? { text } : {}),
+      ...(image ? { image } : {}),
+    };
+    await persist([...annotations, note]);
+  };
+  const mark = (kind: "bold" | "italic" | "highlight") => void addAnnotation(kind).catch(() => {});
+  const eraseMarks = () => {
+    const at = currentAnchor();
+    void persist(
+      annotations.filter((n) => {
+        if (n.kind !== "bold" && n.kind !== "italic" && n.kind !== "highlight") return true;
+        if (n.start === undefined || n.end === undefined) return true;
+        return n.end < at.start || n.start > at.end;
+      }),
+    ).catch(() => {});
+  };
+  const jumpTo = (tokenIndex: number) => {
+    const target = boxRef.current?.querySelector<HTMLElement>(
+      '[data-base] [data-w="' + tokenIndex + '"]',
+    );
+    target?.scrollIntoView({ behavior: prefs.reduceMotion ? "auto" : "smooth", block: "center" });
+    const word = doc.tokens[tokenIndex];
+    if (word) {
+      clock.seek(word.start);
+      setT(clock.t);
+    }
+    setNotesOpen(false);
+  };
   const onTextClick = (e: React.MouseEvent) => {
+    if (window.getSelection()?.toString().trim()) {
+      captureSelection();
+      return;
+    }
     const el = (e.target as HTMLElement).closest<HTMLElement>("[data-w]");
     if (!el) return;
     const tok = doc.tokens[Number(el.dataset.w)];
@@ -178,7 +303,7 @@ export function Reader({
   const set = (patch: Partial<Prefs>) => setPrefs({ ...prefs, ...patch });
 
   return (
-    <div className="page-in fixed inset-0 overflow-hidden">
+    <div className="page-in katha-reader-screen fixed inset-0 overflow-hidden">
       <div className="absolute inset-0">
         <Scene
           theme={prefs.theme}
@@ -188,7 +313,8 @@ export function Reader({
         />
       </div>
 
-      <header className="absolute inset-x-0 top-0 z-20 flex items-center gap-3 px-4 pt-4">
+      <div className="katha-reader-shade pointer-events-none absolute inset-0" />
+      <header className="katha-reader-header absolute inset-x-0 top-0 z-20 flex items-center gap-3 px-4 pt-4">
         <button
           onClick={onBack}
           aria-label="Back to library"
@@ -200,6 +326,13 @@ export function Reader({
           <div className="kicker text-[0.58rem] text-muted-foreground">Katha</div>
           <div className="truncate font-display text-base leading-tight">{book.title}</div>
         </div>
+        <button
+          className="katha-reader-notes-button"
+          onClick={() => setNotesOpen(!notesOpen)}
+          aria-expanded={notesOpen}
+        >
+          Parallel notes · {annotations.length}
+        </button>
       </header>
 
       <div
@@ -207,10 +340,10 @@ export function Reader({
         tabIndex={0}
         role="region"
         aria-label="Reading passage"
-        className="absolute inset-0 z-10 overflow-y-auto overscroll-contain px-3 pb-8 pt-24"
+        className="katha-reader-scroll absolute inset-0 z-10 overflow-y-auto overscroll-contain px-3 pb-8 pt-24"
       >
         <article
-          className="ink-panel mx-auto max-w-[40rem] rounded-[1.75rem] [overflow-wrap:anywhere] px-6 py-8 sm:px-10 sm:py-12"
+          className="ink-panel katha-reading-page mx-auto max-w-[46rem] rounded-[1.75rem] [overflow-wrap:anywhere] px-6 py-8 sm:px-10 sm:py-12"
           style={{ ["--fs" as string]: prefs.fontScale }}
         >
           {book.demo && (
@@ -218,9 +351,22 @@ export function Reader({
               Silent demo · no real audio · tap any sentence
             </p>
           )}
+          <div className="katha-reading-page-heading">
+            <span>YOUR LIVING BOOK</span>
+            <h1>{book.title}</h1>
+            <div className="katha-page-ornament" aria-hidden="true">
+              ✦
+            </div>
+          </div>
           <div ref={boxRef} className="reader-text relative">
-            <div data-base onClick={onTextClick} className="relative z-[1]">
-              <Paras doc={doc} base />
+            <div
+              data-base
+              onClick={onTextClick}
+              onMouseUp={captureSelection}
+              onTouchEnd={captureSelection}
+              className="relative z-[1]"
+            >
+              <Paras doc={doc} base marks={marks} />
             </div>
             <FlowingLightRibbon
               boxRef={boxRef}
@@ -239,17 +385,54 @@ export function Reader({
               className="lit-layer pointer-events-none absolute inset-0 z-[2]"
               style={{ opacity: 0 }}
             >
-              <Paras doc={doc} base={false} />
+              <Paras doc={doc} base={false} marks={marks} />
             </div>
           </div>
         </article>
+        <p className="katha-reading-help">
+          Select a passage to mark it, then use the tools below. Notes and sketches are saved
+          alongside your book.
+        </p>
       </div>
 
+      <ParallelNotes
+        notes={annotations}
+        visible={notesOpen}
+        onClose={() => setNotesOpen(false)}
+        commentSignal={commentSignal}
+        anchor={anchor}
+        onJump={jumpTo}
+        onAdd={addAnnotation}
+        onRemove={async (id) => {
+          try {
+            await persist(annotations.filter((note) => note.id !== id));
+          } catch {
+            /* the error banner explains why it failed */
+          }
+        }}
+      />
       <div
         ref={controlsRef}
         className="absolute inset-x-0 bottom-0 z-20 max-h-[calc(100dvh-5rem)] overflow-y-auto px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
       >
-        <div className="ink-panel mx-auto max-w-[40rem] rounded-[1.5rem] p-3">
+        <AnnotationToolbar
+          selection={anchor}
+          onStyle={mark}
+          onErase={eraseMarks}
+          onComment={() => {
+            setNotesOpen(true);
+            setCommentSignal((n) => n + 1);
+          }}
+          onSketch={(mode) => setDrawingMode(mode)}
+          onDiagram={() => setDiagramOpen(true)}
+          onNotes={() => setNotesOpen((s) => !s)}
+        />
+        {annotationError && (
+          <p role="alert" className="katha-annotation-error">
+            {annotationError}
+          </p>
+        )}
+        <div className="ink-panel katha-player-panel mx-auto max-w-[46rem] rounded-[1.5rem] p-3">
           {panel && (
             <div className="rise-in mb-3 space-y-4 border-b border-border px-1 pb-4 text-sm">
               <Row label="World">
@@ -385,6 +568,25 @@ export function Reader({
           </p>
         </div>
       </div>
+      {drawingMode && (
+        <DrawingPad
+          mode={drawingMode}
+          onClose={() => setDrawingMode(null)}
+          onSave={async (image) => {
+            await addAnnotation("drawing", undefined, image);
+            setDrawingMode(null);
+          }}
+        />
+      )}
+      {diagramOpen && (
+        <DiagramPad
+          onClose={() => setDiagramOpen(false)}
+          onSave={async (flow) => {
+            await addAnnotation("diagram", flow);
+            setDiagramOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }

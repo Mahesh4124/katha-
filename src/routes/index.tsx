@@ -11,6 +11,7 @@ import {
   saveBook,
   savePrefs,
   updateProgress,
+  updateBookCover,
   type Book,
   type Prefs,
 } from "@/lib/storage";
@@ -97,13 +98,18 @@ function App() {
               setError("Could not delete that text.");
             }
           }}
-          onSave={async (title, text) => {
+          onCover={async (id, coverImage) => {
+            await updateBookCover(id, coverImage);
+            await refresh();
+          }}
+          onSave={async (title, text, coverImage) => {
             await saveBook({
               id: `${Date.now().toString(36)}-${Math.floor(performance.now())}`,
               title,
               text,
               createdAt: Date.now(),
               progress: 0,
+              coverImage,
             });
             await refresh();
           }}

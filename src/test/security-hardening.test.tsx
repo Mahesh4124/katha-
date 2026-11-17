@@ -92,8 +92,12 @@ describe("mock threat text is rendered as inert text", () => {
         onProgress={() => {}}
       />,
     );
-    expect(container.querySelector("script, img, svg[onload], a[href^='javascript']")).toBeNull();
-    expect(container.querySelector("[onerror],[onload]")).toBeNull();
+    expect(
+      container.querySelector(
+        "article script, article img, article svg[onload], article a[href^='javascript']",
+      ),
+    ).toBeNull();
+    expect(container.querySelector("article [onerror],article [onload]")).toBeNull();
     expect(container.textContent).toContain("<script>window.__pwned");
     expect(container.querySelector("a[href*='evil']")).toBeNull();
     expect((window as unknown as Record<string, unknown>).__pwned).toBeUndefined();
