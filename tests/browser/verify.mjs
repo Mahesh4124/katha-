@@ -31,7 +31,7 @@ try {
     await page.getByRole("button", { name: "Add text" }).click();
 
     const fakeExe = { name: "story.txt.exe", mimeType: "application/x-msdownload", buffer: Buffer.from("MZ mock—not executable") };
-    await page.locator('input[type="file"]').setInputFiles(fakeExe);
+    await page.locator('input[accept=".txt,text/plain"]').setInputFiles(fakeExe);
     assert.match(await page.locator('[role="alert"]').last().innerText(), /Only plain/);
     await page.getByPlaceholder("Title").fill(title);
     await page.getByPlaceholder(/Paste a passage/).fill(passage);
