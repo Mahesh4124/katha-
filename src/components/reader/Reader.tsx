@@ -12,7 +12,13 @@ import {
 } from "lucide-react";
 import { Scene, THEMES } from "@/components/scenes/Scene";
 import { updateBookAnnotations, type Annotation, type Prefs, type ThemeId } from "@/lib/storage";
-import { AnnotationToolbar, ParallelNotes, DrawingPad, DiagramPad, type TextAnchor } from "./AnnotationTools";
+import {
+  AnnotationToolbar,
+  ParallelNotes,
+  DrawingPad,
+  DiagramPad,
+  type TextAnchor,
+} from "./AnnotationTools";
 import { FlowingLightRibbon } from "./FlowingLightRibbon";
 import { buildDoc, Clock, indexAt, type Doc } from "./text";
 
@@ -37,13 +43,19 @@ function Paras({ doc, base, marks }: { doc: Doc; base: boolean; marks: WordMarks
         >
           {p.pieces.map((pc, j) =>
             pc.w ? (
-              <span key={j} data-w={pc.w.i} className={[
-                "reader-word",
-                base ? "cursor-pointer" : "",
-                marks.get(pc.w.i)?.bold ? "reader-word--bold" : "",
-                marks.get(pc.w.i)?.italic ? "reader-word--italic" : "",
-                marks.get(pc.w.i)?.highlight ? "reader-word--highlight" : "",
-              ].filter(Boolean).join(" ")}>
+              <span
+                key={j}
+                data-w={pc.w.i}
+                className={[
+                  "reader-word",
+                  base ? "cursor-pointer" : "",
+                  marks.get(pc.w.i)?.bold ? "reader-word--bold" : "",
+                  marks.get(pc.w.i)?.italic ? "reader-word--italic" : "",
+                  marks.get(pc.w.i)?.highlight ? "reader-word--highlight" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
                 {pc.w.text}
               </span>
             ) : (
@@ -208,8 +220,15 @@ export function Reader({
     if (!Number.isInteger(a) || !Number.isInteger(b)) return;
     const first = Math.min(a, b);
     const last = Math.min(doc.tokens.length - 1, first + 499, Math.max(a, b));
-    setAnchor({ start: first, end: last,
-      quote: doc.tokens.slice(first, last + 1).map((w) => w.text).join(" ").slice(0, 350) });
+    setAnchor({
+      start: first,
+      end: last,
+      quote: doc.tokens
+        .slice(first, last + 1)
+        .map((w) => w.text)
+        .join(" ")
+        .slice(0, 350),
+    });
   };
   const currentAnchor = (): TextAnchor => {
     const current = doc.tokens[Math.max(0, indexAt(doc.tokens, clock.now()))];
@@ -220,8 +239,9 @@ export function Reader({
     const previous = annotations;
     setAnnotations(next);
     setAnnotationError(null);
-    try { if (book.id) await updateBookAnnotations(book.id, next); }
-    catch (error) {
+    try {
+      if (book.id) await updateBookAnnotations(book.id, next);
+    } catch (error) {
       setAnnotations(previous);
       setAnnotationError(error instanceof Error ? error.message : "Could not save annotations.");
       throw error;
@@ -233,30 +253,43 @@ export function Reader({
     const at = currentAnchor();
     const note: Annotation = {
       id: Date.now().toString(36) + Math.random().toString(36).slice(2),
-      kind, start: at.start, end: at.end, quote: at.quote, ...(text ? { text } : {}),
+      kind,
+      start: at.start,
+      end: at.end,
+      quote: at.quote,
+      ...(text ? { text } : {}),
       ...(image ? { image } : {}),
     };
     await persist([...annotations, note]);
   };
-  const mark = (kind: "bold" | "italic" | "highlight") =>
-    void addAnnotation(kind).catch(() => {});
+  const mark = (kind: "bold" | "italic" | "highlight") => void addAnnotation(kind).catch(() => {});
   const eraseMarks = () => {
     const at = currentAnchor();
-    void persist(annotations.filter((n) => {
-      if (n.kind !== "bold" && n.kind !== "italic" && n.kind !== "highlight") return true;
-      if (n.start === undefined || n.end === undefined) return true;
-      return n.end < at.start || n.start > at.end;
-    })).catch(() => {});
+    void persist(
+      annotations.filter((n) => {
+        if (n.kind !== "bold" && n.kind !== "italic" && n.kind !== "highlight") return true;
+        if (n.start === undefined || n.end === undefined) return true;
+        return n.end < at.start || n.start > at.end;
+      }),
+    ).catch(() => {});
   };
   const jumpTo = (tokenIndex: number) => {
-    const target = boxRef.current?.querySelector<HTMLElement>('[data-base] [data-w="' + tokenIndex + '"]');
+    const target = boxRef.current?.querySelector<HTMLElement>(
+      '[data-base] [data-w="' + tokenIndex + '"]',
+    );
     target?.scrollIntoView({ behavior: prefs.reduceMotion ? "auto" : "smooth", block: "center" });
     const word = doc.tokens[tokenIndex];
-    if (word) { clock.seek(word.start); setT(clock.t); }
+    if (word) {
+      clock.seek(word.start);
+      setT(clock.t);
+    }
     setNotesOpen(false);
   };
   const onTextClick = (e: React.MouseEvent) => {
-    if (window.getSelection()?.toString().trim()) { captureSelection(); return; }
+    if (window.getSelection()?.toString().trim()) {
+      captureSelection();
+      return;
+    }
     const el = (e.target as HTMLElement).closest<HTMLElement>("[data-w]");
     if (!el) return;
     const tok = doc.tokens[Number(el.dataset.w)];
@@ -293,8 +326,14 @@ export function Reader({
           <div className="kicker text-[0.58rem] text-muted-foreground">Katha</div>
           <div className="truncate font-display text-base leading-tight">{book.title}</div>
         </div>
-        <button className="katha-reader-notes-button" onClick={() => setNotesOpen(!notesOpen)}
-          aria-label="Open parallel notes" aria-expanded={notesOpen}>Parallel notes · {annotations.length}</button>
+        <button
+          className="katha-reader-notes-button"
+          onClick={() => setNotesOpen(!notesOpen)}
+          aria-label="Open parallel notes"
+          aria-expanded={notesOpen}
+        >
+          Parallel notes · {annotations.length}
+        </button>
       </header>
 
       <div
@@ -316,10 +355,18 @@ export function Reader({
           <div className="katha-reading-page-heading">
             <span>YOUR LIVING BOOK</span>
             <h1>{book.title}</h1>
-            <div className="katha-page-ornament" aria-hidden="true">✦</div>
+            <div className="katha-page-ornament" aria-hidden="true">
+              ✦
+            </div>
           </div>
           <div ref={boxRef} className="reader-text relative">
-            <div data-base onClick={onTextClick} onMouseUp={captureSelection} onTouchEnd={captureSelection} className="relative z-[1]">
+            <div
+              data-base
+              onClick={onTextClick}
+              onMouseUp={captureSelection}
+              onTouchEnd={captureSelection}
+              className="relative z-[1]"
+            >
               <Paras doc={doc} base marks={marks} />
             </div>
             <FlowingLightRibbon
@@ -343,25 +390,49 @@ export function Reader({
             </div>
           </div>
         </article>
-        <p className="katha-reading-help">Select a passage to mark it, then use the tools below. Notes and sketches are saved alongside your book.</p>
+        <p className="katha-reading-help">
+          Select a passage to mark it, then use the tools below. Notes and sketches are saved
+          alongside your book.
+        </p>
       </div>
 
-      <ParallelNotes notes={annotations} visible={notesOpen} onClose={() => setNotesOpen(false)}
-        commentSignal={commentSignal} anchor={anchor} onJump={jumpTo}
-        onAdd={addAnnotation} onRemove={async (id) => {
-          try { await persist(annotations.filter((note) => note.id !== id)); }
-          catch { /* the error banner explains why it failed */ }
-        }}/>
+      <ParallelNotes
+        notes={annotations}
+        visible={notesOpen}
+        onClose={() => setNotesOpen(false)}
+        commentSignal={commentSignal}
+        anchor={anchor}
+        onJump={jumpTo}
+        onAdd={addAnnotation}
+        onRemove={async (id) => {
+          try {
+            await persist(annotations.filter((note) => note.id !== id));
+          } catch {
+            /* the error banner explains why it failed */
+          }
+        }}
+      />
       <div
         ref={controlsRef}
         className="absolute inset-x-0 bottom-0 z-20 max-h-[calc(100dvh-5rem)] overflow-y-auto px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
       >
-        <AnnotationToolbar selection={anchor} onStyle={mark} onErase={eraseMarks}
-          onComment={() => { setNotesOpen(true); setCommentSignal((n) => n + 1); }}
+        <AnnotationToolbar
+          selection={anchor}
+          onStyle={mark}
+          onErase={eraseMarks}
+          onComment={() => {
+            setNotesOpen(true);
+            setCommentSignal((n) => n + 1);
+          }}
           onSketch={(mode) => setDrawingMode(mode)}
           onDiagram={() => setDiagramOpen(true)}
-          onNotes={() => setNotesOpen((s) => !s)}/>
-        {annotationError && <p role="alert" className="katha-annotation-error">{annotationError}</p>}
+          onNotes={() => setNotesOpen((s) => !s)}
+        />
+        {annotationError && (
+          <p role="alert" className="katha-annotation-error">
+            {annotationError}
+          </p>
+        )}
         <div className="ink-panel katha-player-panel mx-auto max-w-[46rem] rounded-[1.5rem] p-3">
           {panel && (
             <div className="rise-in mb-3 space-y-4 border-b border-border px-1 pb-4 text-sm">
@@ -498,10 +569,25 @@ export function Reader({
           </p>
         </div>
       </div>
-      {drawingMode && <DrawingPad mode={drawingMode} onClose={() => setDrawingMode(null)}
-        onSave={async (image) => { await addAnnotation("drawing", undefined, image); setDrawingMode(null); }}/>}
-      {diagramOpen && <DiagramPad onClose={() => setDiagramOpen(false)}
-        onSave={async (flow) => { await addAnnotation("diagram", flow); setDiagramOpen(false); }}/>}
+      {drawingMode && (
+        <DrawingPad
+          mode={drawingMode}
+          onClose={() => setDrawingMode(null)}
+          onSave={async (image) => {
+            await addAnnotation("drawing", undefined, image);
+            setDrawingMode(null);
+          }}
+        />
+      )}
+      {diagramOpen && (
+        <DiagramPad
+          onClose={() => setDiagramOpen(false)}
+          onSave={async (flow) => {
+            await addAnnotation("diagram", flow);
+            setDiagramOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }

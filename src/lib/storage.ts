@@ -148,7 +148,11 @@ export async function updateProgress(id: string, progress: number) {
 
 /** Keep custom covers and reader notes in the same transaction-safe book record. */
 export async function updateBookCover(id: string, coverImage?: string) {
-  if (coverImage && (!/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(coverImage) || coverImage.length > 2_500_000))
+  if (
+    coverImage &&
+    (!/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(coverImage) ||
+      coverImage.length > 2_500_000)
+  )
     throw new Error("Only optimized JPEG, PNG or WebP covers can be saved.");
   await tx<Book | undefined>("readwrite", (store) => {
     const req = store.get(id) as IDBRequest<Book | undefined>;

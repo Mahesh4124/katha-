@@ -1,223 +1,1388 @@
-:root{--katha-gold:#f9d59e;--katha-ivory:#fff5e6;--katha-rose:#e7afc3;}
-.cinematic-world{position:absolute;inset:0;overflow:hidden;isolation:isolate;background:#11182e}
-.cinematic-world__photo{position:absolute;inset:-2.5%;width:105%;height:105%;object-fit:cover;object-position:center center;max-width:none;animation:world-drift 34s ease-in-out infinite alternate;transform:scale(1.04);backface-visibility:hidden}
-.cinematic-world--lotus .cinematic-world__photo{object-position:center 53%}
-.cinematic-world--sakura .cinematic-world__photo{object-position:center 44%}
-.cinematic-world__light{position:absolute;inset:0;background:radial-gradient(ellipse 52% 28% at 68% 26%,rgba(249,211,167,.24),transparent 80%),linear-gradient(160deg,rgba(4,13,36,.2),transparent 38%,rgba(9,9,29,.22));mix-blend-mode:screen;animation:world-shimmer 12s ease-in-out infinite alternate}
-.cinematic-world__mist{position:absolute;inset:45% -20% 0;background:radial-gradient(ellipse 75% 20% at 55% 30%,rgba(196,197,239,.14),transparent 85%);animation:world-mist 18s ease-in-out infinite alternate}
-.cinematic-world__grade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,11,31,.22) 0%,rgba(9,12,29,.14) 37%,rgba(9,12,29,.36) 77%,rgba(5,10,22,.77) 100%)}
-.cinematic-world--light .cinematic-world__grade{background:linear-gradient(180deg,rgba(47,32,46,.14),rgba(35,29,42,.27) 58%,rgba(15,21,39,.67))}
-.cinematic-world--sakura .cinematic-world__grade{background:linear-gradient(180deg,rgba(35,16,42,.37),rgba(27,19,44,.23) 45%,rgba(18,18,38,.83))}
-.cinematic-world--mini .cinematic-world__photo{animation:none;transform:none;inset:0;width:100%;height:100%}
-@keyframes world-drift{from{transform:scale(1.045) translate3d(-.5%,0,0)}to{transform:scale(1.09) translate3d(1%,calc(var(--world-drift) * -.5),0)}}
-@keyframes world-shimmer{from{opacity:.6}to{opacity:1}}
-@keyframes world-mist{from{transform:translateX(-2%)}to{transform:translateX(3%)}}
-.katha-home{color:var(--katha-ivory);overflow-x:clip;min-height:100vh;font-family:var(--font-ui)}
-.katha-home-shade{background:linear-gradient(90deg,rgba(8,14,30,.45) 0%,rgba(8,14,30,.16) 62%,rgba(8,14,30,.3) 100%),linear-gradient(180deg,transparent 12%,rgba(8,10,24,.44) 68%,rgba(8,10,24,.7) 100%)}
-.katha-home-content{width:100%;padding:clamp(16px,3.5vw,42px) clamp(18px,4vw,48px) 30px}
-.katha-main-header{display:flex;align-items:center;justify-content:space-between;gap:18px}
-.katha-brand{display:flex;align-items:center;gap:14px;min-width:0}
-.katha-lotus-mark{display:grid;place-items:center;font-family:Georgia,serif;width:61px;height:61px;border:1.5px solid rgba(250,208,145,.72);border-radius:24px 6px 24px 6px;color:var(--katha-gold);text-shadow:0 0 17px rgba(255,218,151,.8);font-size:48px;line-height:1;transform:rotate(-12deg)}
-.katha-brand>div{display:flex;flex-direction:column}
-.katha-brand-title{font:500 clamp(2.3rem,4vw,3.4rem)/.82 var(--font-display);letter-spacing:-.025em;text-shadow:0 2px 20px rgba(2,6,23,.48)}
-.katha-brand-line{font:italic 1rem var(--font-display);margin-top:8px;color:#f1dbc8}
-.katha-header-actions{display:flex;align-items:center;gap:10px}
-.katha-round{width:43px;height:43px;display:inline-flex;align-items:center;justify-content:center;color:var(--katha-ivory);border:1px solid rgba(255,255,255,.31);border-radius:50%;background:rgba(11,20,38,.36);backdrop-filter:blur(12px);transition:background .2s,transform .2s}
-.katha-round:hover,.katha-carousel-arrow:hover{background:rgba(249,211,167,.16);transform:translateY(-2px)}
-.katha-search{width:clamp(135px,20vw,220px);padding:10px 12px;border-radius:20px;background:rgba(11,19,36,.75);border:1px solid rgba(255,255,255,.24);color:#fff}
-.katha-hero{padding-top:clamp(65px,11vh,125px);max-width:850px;padding-bottom:clamp(56px,12vh,130px)}
-.katha-overline{font:600 .62rem var(--font-ui);letter-spacing:.26em;color:#f5d8ad}
-.katha-hero h1{font:500 clamp(3.05rem,7vw,6.7rem)/.98 var(--font-display);letter-spacing:-.035em;text-shadow:0 5px 35px rgba(3,6,22,.5);margin:18px 0 15px}
-.katha-hero h1 em{font-weight:400;color:var(--katha-gold)}
-.katha-hero p{max-width:450px;font:400 clamp(1.05rem,2vw,1.35rem)/1.55 var(--font-read);color:#f3e9e3;text-shadow:0 2px 10px #13162e}
-.katha-hero-buttons{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-top:28px}
-.katha-primary-action{border-radius:999px;background:linear-gradient(110deg,#fff4e4 0%,#f7d5ac 54%,#e3b979 100%);border:1px solid rgba(255,252,231,.91);box-shadow:0 0 23px rgba(255,196,133,.43),0 10px 28px rgba(4,8,29,.4);color:#251d24;display:inline-flex;align-items:center;justify-content:center;gap:13px;font:600 1.03rem var(--font-display);padding:13px 22px;min-height:49px;transition:transform .25s,box-shadow .25s}
-.katha-primary-action:hover{transform:translateY(-2px);box-shadow:0 0 28px rgba(255,196,133,.66)}
-.katha-outline-action,.katha-small-action,.katha-ghost-button{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 17px;border-radius:999px;background:rgba(12,20,38,.45);color:#fff3df;border:1px solid rgba(248,220,190,.37);backdrop-filter:blur(15px);font-size:.85rem;min-height:43px;transition:border-color .22s,background .22s}
-.katha-outline-action:hover,.katha-small-action:hover,.katha-ghost-button:hover{border-color:#f9d59e;background:rgba(55,48,59,.65)}
-.katha-world-section,.katha-shelf-section{margin-bottom:clamp(43px,7vw,80px)}
-.katha-section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:20px}
-.katha-section-head h2,.katha-discover h2{font:500 clamp(2.15rem,4.3vw,3.5rem)/1 var(--font-display);margin-top:8px;letter-spacing:-.022em;text-shadow:0 2px 15px #0b0f25}
-.katha-hint{font:italic 1.05rem var(--font-display);color:#f4dfd2;text-align:right}
-.katha-world-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
-.katha-world-card{position:relative;overflow:hidden;min-height:110px;display:flex;align-items:end;text-align:left;border-radius:24px;border:1px solid rgba(252,235,220,.33);background:rgba(18,21,40,.5);backdrop-filter:blur(20px);box-shadow:0 7px 26px rgba(0,0,0,.18);transition:transform .28s,border-color .28s,box-shadow .28s}
-.katha-world-card:hover{transform:translateY(-3px)}
-.katha-world-card.is-current{border:1.5px solid #f6c98c;box-shadow:0 0 0 1px rgba(250,208,164,.25),0 0 27px rgba(253,203,146,.24)}
-.katha-world-thumb{position:absolute;inset:0;background-position:center 47%;background-size:cover;opacity:.8;transform:scale(1.035);transition:transform .35s}
-.katha-world-card:hover .katha-world-thumb{transform:scale(1.085)}
-.katha-world-card:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,17,35,.87) 4%,rgba(14,17,35,.34) 94%)}
-.katha-world-meta{position:relative;z-index:1;display:flex;align-items:center;gap:12px;margin:0 44px 15px 17px;min-width:0}
-.katha-world-meta strong{display:block;font:500 clamp(1.24rem,2.5vw,2rem)/1.1 var(--font-display);white-space:nowrap}
-.katha-world-meta small{display:block;font-size:.65rem;line-height:1.45;color:#e9dae2;margin-top:5px}
-.katha-world-icon{font-size:1.8rem;color:#efc5d3;flex:0 0 auto}
-.katha-world-check{position:absolute;right:14px;bottom:18px;z-index:2;width:30px;height:30px;display:grid;place-items:center;border:1px solid rgba(255,247,227,.5);border-radius:50%;background:rgba(18,21,40,.4)}
-.katha-world-card.is-current .katha-world-check{background:#f9d59e;color:#231a25}
-.katha-cover-stage{height:clamp(310px,44vw,445px);position:relative;margin-top:4px;display:flex;justify-content:center;align-items:center;perspective:1300px;overflow:visible;touch-action:pan-y}
-.katha-book-card,.katha-cover-sample{display:block;position:absolute;left:50%;top:50%;width:clamp(176px,21vw,245px);height:clamp(252px,31vw,365px);border:1px solid rgba(255,227,195,.72);border-radius:10px 18px 18px 10px;box-shadow:0 22px 42px rgba(5,7,18,.62),inset -8px 0 8px rgba(255,244,215,.2),0 0 15px rgba(240,201,150,.24);overflow:visible;text-align:center;transition:transform .65s cubic-bezier(.19,.8,.24,1),filter .6s,box-shadow .6s;transform-origin:center center;backface-visibility:hidden;color:#fff5e9;isolation:isolate}
-.katha-book-card{transform:translate(-50%,-50%) scale(1);background:#1c2239}
-.katha-book-card--sample,.katha-book-card--active{box-shadow:0 24px 56px rgba(5,7,18,.73),0 0 22px rgba(249,206,143,.42);border-color:#fbdba8}
-.katha-book-card:focus-visible{outline:3px solid #fff5e3;outline-offset:5px}
-.katha-cover-photo,.katha-cover-tint{position:absolute;inset:0;z-index:-2;border-radius:inherit}
-.katha-cover-photo{background-size:cover;background-position:center center;box-shadow:inset -12px 0 20px rgba(0,0,0,.35)}
-.katha-cover-tint{z-index:-1;background:linear-gradient(180deg,rgba(8,15,37,.33) 0%,rgba(14,16,42,.62) 48%,rgba(8,10,30,.72) 100%)}
-.katha-cover-ornament{position:absolute;top:17%;left:0;right:0;color:#ffdfb4;font-size:2.1rem;text-shadow:0 0 23px #f6c58a}
-.katha-cover-title{position:absolute;top:38%;left:12px;right:12px;display:flex;align-items:center;flex-direction:column;gap:20px;text-shadow:0 2px 16px #070e1b}
-.katha-cover-title strong{font:italic 500 clamp(1.7rem,2.5vw,2.55rem)/1.04 var(--font-display);overflow-wrap:anywhere}
-.katha-cover-title small{font:.57rem var(--font-ui);letter-spacing:.18em;color:#f7e2c7}
-.katha-cover-pages{position:absolute;inset:6px -7px 3px auto;width:9px;background:repeating-linear-gradient(90deg,#f1dac2 0 1px,#ac8978 1px 2px);border-radius:0 10px 10px 0;transform:skewY(2deg);z-index:-3}
-.katha-shelf-controls{display:flex;align-items:center;justify-content:space-between;gap:13px;max-width:560px;margin:-8px auto 0}
-.katha-carousel-arrow{height:40px;width:40px;border:1px solid rgba(255,255,255,.42);border-radius:50%;display:grid;place-items:center;background:rgba(15,24,42,.57);flex:0 0 auto;transition:transform .2s}
-.katha-carousel-arrow:disabled{opacity:.45;cursor:not-allowed}
-.katha-shelf-progress{display:flex;flex-direction:column;text-align:center;max-width:100%;min-width:0}
-.katha-shelf-progress strong{font:500 1.3rem/1.13 var(--font-display);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.katha-shelf-progress span{font-size:.7rem;margin-top:6px;color:#ddced2}
-.katha-selected-actions{display:flex;gap:9px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:19px}
-.katha-selected-actions button{padding:9px 14px;border-radius:999px;border:1px solid rgba(255,235,214,.38);background:rgba(13,20,39,.56);display:flex;align-items:center;gap:8px;font-size:.74rem}
-.katha-discover{padding:clamp(18px,3vw,28px);border-radius:30px;background:rgba(15,21,40,.62);margin:12px 0 35px}
-.katha-discover h2{font-size:clamp(2rem,3vw,2.7rem);margin:0 0 15px}
-.katha-feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.katha-feature-grid button{position:relative;padding:17px 16px;border:1px solid rgba(252,232,203,.29);border-radius:20px;background:rgba(242,230,233,.09);display:flex;flex-direction:column;align-items:start;gap:7px;text-align:left;color:#fff6e8;transition:transform .25s,background .25s}
-.katha-feature-grid button:hover{transform:translateY(-3px);background:rgba(242,230,233,.14)}
-.katha-feature-grid button svg:first-child{color:#f5cfa2}
-.katha-feature-grid strong{font:500 1.35rem/1 var(--font-display)}
-.katha-feature-grid span{font-size:.71rem;color:#e8dfe3}
-.katha-feature-grid button svg:last-child{position:absolute;right:11px;top:18px}
-.katha-disclosure{font-size:.66rem;color:#e3d5d8;margin-top:16px}
-.katha-bottom-nav{position:sticky;bottom:12px;display:flex;align-items:center;justify-content:space-around;gap:8px;border-radius:24px;border:1px solid rgba(255,255,255,.32);background:rgba(17,25,42,.78);backdrop-filter:blur(20px);box-shadow:0 14px 24px rgba(0,0,0,.35);padding:12px;z-index:10}
-.katha-bottom-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:56px;color:#f5e7da;font-size:.7rem}
-.katha-bottom-nav button:hover{color:#f9d59e}
-.katha-bottom-nav button:first-child{color:#f7d19b}
-.katha-modal-backdrop{position:fixed;inset:0;z-index:100;display:flex;align-items:end;justify-content:center;color:#fff5e6}
-.katha-modal-scrim{position:absolute;inset:0;background:rgba(3,6,20,.75);backdrop-filter:blur(7px)}
-.katha-modal{position:relative;width:min(620px,100%);max-height:94dvh;overflow:auto;border-radius:28px 28px 0 0;border:1px solid rgba(250,217,180,.49);padding:24px;background:linear-gradient(145deg,rgba(34,35,54,.98),rgba(15,22,41,.99));box-shadow:0 -18px 60px rgba(0,0,0,.56);animation:sheet-in .4s both}
-.katha-modal-head{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:14px}
-.katha-modal-head span{font:.58rem var(--font-ui);letter-spacing:.22em;color:#f9d59e}
-.katha-modal-head h2{font:500 2.5rem/1.1 var(--font-display)}
-.katha-modal>p{font:.91rem/1.5 var(--font-read);color:#e8d9d4;margin-bottom:12px}
-.katha-field{display:block;width:100%;border:1px solid rgba(252,230,203,.31);background:rgba(8,13,31,.47);border-radius:14px;padding:13px 15px;color:white;outline:none;margin:10px 0}
-.katha-field:focus{border-color:#f4c78d}
-.katha-field--title{font:500 1.5rem var(--font-display)}
-.katha-text-area{font:1.07rem/1.55 var(--font-read);resize:vertical;min-height:130px}
-.katha-modal-actions{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
-.katha-modal-note{font-size:.68rem!important;color:#cfc2c7!important}
-.katha-form-error{margin:12px 0;padding:10px 12px;border:1px solid #fdb4b4;border-radius:11px;background:rgba(85,21,37,.54);color:#fff1ef;font-size:.83rem}
-.katha-save-button{width:100%;margin-top:10px}
-.katha-cover-preview{height:90px;width:67px;object-fit:cover;border-radius:7px;margin:10px auto}
-.katha-cover-sample{position:relative;left:auto;top:auto;transform:none;width:142px;height:205px;margin:10px auto 18px}
-.katha-cover-sample .katha-cover-title strong{font-size:1.5rem}
-.katha-cover-sample .katha-cover-title{gap:10px}
-@media(max-width:640px){
-.katha-main-header{padding-top:4px}
-.katha-lotus-mark{width:46px;height:46px;font-size:35px;border-radius:19px 5px}
-.katha-brand-title{font-size:2.55rem}
-.katha-brand-line{font-size:.85rem}
-.katha-header-actions{gap:8px}
-.katha-round{width:39px;height:39px}
-.katha-hero{padding-top:clamp(76px,13vh,145px);padding-bottom:64px}
-.katha-hero h1{font-size:clamp(3.1rem,10.2vw,4.45rem)}
-.katha-hero p{max-width:315px}
-.katha-hero-buttons{gap:9px}
-.katha-primary-action{font-size:.96rem;padding:12px 17px}
-.katha-outline-action{font-size:.81rem}
-.katha-hint,.katha-world-meta small{display:none}
-.katha-world-grid{gap:10px}
-.katha-world-card{min-height:98px;border-radius:19px}
-.katha-world-meta{gap:6px;margin:0 26px 14px 10px}
-.katha-world-meta strong{font-size:1.35rem;white-space:normal}
-.katha-world-icon{font-size:1.2rem}
-.katha-world-check{right:8px;bottom:13px;width:23px;height:23px}
-.katha-cover-stage{height:350px}
-.katha-book-card{width:200px;height:282px}
-.katha-feature-grid{grid-template-columns:1fr}
-.katha-feature-grid button{min-height:73px;padding:12px 15px;gap:4px}
-.katha-feature-grid button strong{font-size:1.23rem}
-.katha-discover{margin-bottom:20px}
-.katha-bottom-nav{bottom:9px;border-radius:21px}
+:root {
+  --katha-gold: #f9d59e;
+  --katha-ivory: #fff5e6;
+  --katha-rose: #e7afc3;
 }
-@media(max-width:380px){.katha-home-content{padding-left:16px;padding-right:16px}.katha-hero-buttons{flex-direction:column;align-items:start}.katha-book-card{width:185px;height:268px}.katha-cover-stage{height:328px}}
-@media(prefers-reduced-motion:reduce){.cinematic-world__photo,.cinematic-world__light,.cinematic-world__mist{animation:none!important;transform:none!important}.katha-book-card,.katha-world-thumb{transition:none!important}}
-[data-reduced="true"] .cinematic-world__photo,[data-reduced="true"] .cinematic-world__light,[data-reduced="true"] .cinematic-world__mist{animation:none!important;transform:none!important}
-
+.cinematic-world {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  isolation: isolate;
+  background: #11182e;
+}
+.cinematic-world__photo {
+  position: absolute;
+  inset: -2.5%;
+  width: 105%;
+  height: 105%;
+  object-fit: cover;
+  object-position: center center;
+  max-width: none;
+  animation: world-drift 34s ease-in-out infinite alternate;
+  transform: scale(1.04);
+  backface-visibility: hidden;
+}
+.cinematic-world--lotus .cinematic-world__photo {
+  object-position: center 53%;
+}
+.cinematic-world--sakura .cinematic-world__photo {
+  object-position: center 44%;
+}
+.cinematic-world__light {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 52% 28% at 68% 26%, rgba(249, 211, 167, 0.24), transparent 80%),
+    linear-gradient(160deg, rgba(4, 13, 36, 0.2), transparent 38%, rgba(9, 9, 29, 0.22));
+  mix-blend-mode: screen;
+  animation: world-shimmer 12s ease-in-out infinite alternate;
+}
+.cinematic-world__mist {
+  position: absolute;
+  inset: 45% -20% 0;
+  background: radial-gradient(
+    ellipse 75% 20% at 55% 30%,
+    rgba(196, 197, 239, 0.14),
+    transparent 85%
+  );
+  animation: world-mist 18s ease-in-out infinite alternate;
+}
+.cinematic-world__grade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(8, 11, 31, 0.22) 0%,
+    rgba(9, 12, 29, 0.14) 37%,
+    rgba(9, 12, 29, 0.36) 77%,
+    rgba(5, 10, 22, 0.77) 100%
+  );
+}
+.cinematic-world--light .cinematic-world__grade {
+  background: linear-gradient(
+    180deg,
+    rgba(47, 32, 46, 0.14),
+    rgba(35, 29, 42, 0.27) 58%,
+    rgba(15, 21, 39, 0.67)
+  );
+}
+.cinematic-world--sakura .cinematic-world__grade {
+  background: linear-gradient(
+    180deg,
+    rgba(35, 16, 42, 0.37),
+    rgba(27, 19, 44, 0.23) 45%,
+    rgba(18, 18, 38, 0.83)
+  );
+}
+.cinematic-world--mini .cinematic-world__photo {
+  animation: none;
+  transform: none;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+@keyframes world-drift {
+  from {
+    transform: scale(1.045) translate3d(-0.5%, 0, 0);
+  }
+  to {
+    transform: scale(1.09) translate3d(1%, calc(var(--world-drift) * -0.5), 0);
+  }
+}
+@keyframes world-shimmer {
+  from {
+    opacity: 0.6;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes world-mist {
+  from {
+    transform: translateX(-2%);
+  }
+  to {
+    transform: translateX(3%);
+  }
+}
+.katha-home {
+  color: var(--katha-ivory);
+  overflow-x: clip;
+  min-height: 100vh;
+  font-family: var(--font-ui);
+}
+.katha-home-shade {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(8, 14, 30, 0.45) 0%,
+      rgba(8, 14, 30, 0.16) 62%,
+      rgba(8, 14, 30, 0.3) 100%
+    ),
+    linear-gradient(180deg, transparent 12%, rgba(8, 10, 24, 0.44) 68%, rgba(8, 10, 24, 0.7) 100%);
+}
+.katha-home-content {
+  width: 100%;
+  padding: clamp(16px, 3.5vw, 42px) clamp(18px, 4vw, 48px) 30px;
+}
+.katha-main-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.katha-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+.katha-lotus-mark {
+  display: grid;
+  place-items: center;
+  font-family: Georgia, serif;
+  width: 61px;
+  height: 61px;
+  border: 1.5px solid rgba(250, 208, 145, 0.72);
+  border-radius: 24px 6px 24px 6px;
+  color: var(--katha-gold);
+  text-shadow: 0 0 17px rgba(255, 218, 151, 0.8);
+  font-size: 48px;
+  line-height: 1;
+  transform: rotate(-12deg);
+}
+.katha-brand > div {
+  display: flex;
+  flex-direction: column;
+}
+.katha-brand-title {
+  font: 500 clamp(2.3rem, 4vw, 3.4rem)/0.82 var(--font-display);
+  letter-spacing: -0.025em;
+  text-shadow: 0 2px 20px rgba(2, 6, 23, 0.48);
+}
+.katha-brand-line {
+  font: italic 1rem var(--font-display);
+  margin-top: 8px;
+  color: #f1dbc8;
+}
+.katha-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.katha-round {
+  width: 43px;
+  height: 43px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--katha-ivory);
+  border: 1px solid rgba(255, 255, 255, 0.31);
+  border-radius: 50%;
+  background: rgba(11, 20, 38, 0.36);
+  backdrop-filter: blur(12px);
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+.katha-round:hover,
+.katha-carousel-arrow:hover {
+  background: rgba(249, 211, 167, 0.16);
+  transform: translateY(-2px);
+}
+.katha-search {
+  width: clamp(135px, 20vw, 220px);
+  padding: 10px 12px;
+  border-radius: 20px;
+  background: rgba(11, 19, 36, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: #fff;
+}
+.katha-hero {
+  padding-top: clamp(65px, 11vh, 125px);
+  max-width: 850px;
+  padding-bottom: clamp(56px, 12vh, 130px);
+}
+.katha-overline {
+  font: 600 0.62rem var(--font-ui);
+  letter-spacing: 0.26em;
+  color: #f5d8ad;
+}
+.katha-hero h1 {
+  font: 500 clamp(3.05rem, 7vw, 6.7rem)/0.98 var(--font-display);
+  letter-spacing: -0.035em;
+  text-shadow: 0 5px 35px rgba(3, 6, 22, 0.5);
+  margin: 18px 0 15px;
+}
+.katha-hero h1 em {
+  font-weight: 400;
+  color: var(--katha-gold);
+}
+.katha-hero p {
+  max-width: 450px;
+  font: 400 clamp(1.05rem, 2vw, 1.35rem)/1.55 var(--font-read);
+  color: #f3e9e3;
+  text-shadow: 0 2px 10px #13162e;
+}
+.katha-hero-buttons {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+.katha-primary-action {
+  border-radius: 999px;
+  background: linear-gradient(110deg, #fff4e4 0%, #f7d5ac 54%, #e3b979 100%);
+  border: 1px solid rgba(255, 252, 231, 0.91);
+  box-shadow:
+    0 0 23px rgba(255, 196, 133, 0.43),
+    0 10px 28px rgba(4, 8, 29, 0.4);
+  color: #251d24;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  font: 600 1.03rem var(--font-display);
+  padding: 13px 22px;
+  min-height: 49px;
+  transition:
+    transform 0.25s,
+    box-shadow 0.25s;
+}
+.katha-primary-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 28px rgba(255, 196, 133, 0.66);
+}
+.katha-outline-action,
+.katha-small-action,
+.katha-ghost-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 12px 17px;
+  border-radius: 999px;
+  background: rgba(12, 20, 38, 0.45);
+  color: #fff3df;
+  border: 1px solid rgba(248, 220, 190, 0.37);
+  backdrop-filter: blur(15px);
+  font-size: 0.85rem;
+  min-height: 43px;
+  transition:
+    border-color 0.22s,
+    background 0.22s;
+}
+.katha-outline-action:hover,
+.katha-small-action:hover,
+.katha-ghost-button:hover {
+  border-color: #f9d59e;
+  background: rgba(55, 48, 59, 0.65);
+}
+.katha-world-section,
+.katha-shelf-section {
+  margin-bottom: clamp(43px, 7vw, 80px);
+}
+.katha-section-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.katha-section-head h2,
+.katha-discover h2 {
+  font: 500 clamp(2.15rem, 4.3vw, 3.5rem)/1 var(--font-display);
+  margin-top: 8px;
+  letter-spacing: -0.022em;
+  text-shadow: 0 2px 15px #0b0f25;
+}
+.katha-hint {
+  font: italic 1.05rem var(--font-display);
+  color: #f4dfd2;
+  text-align: right;
+}
+.katha-world-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+.katha-world-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 110px;
+  display: flex;
+  align-items: end;
+  text-align: left;
+  border-radius: 24px;
+  border: 1px solid rgba(252, 235, 220, 0.33);
+  background: rgba(18, 21, 40, 0.5);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 7px 26px rgba(0, 0, 0, 0.18);
+  transition:
+    transform 0.28s,
+    border-color 0.28s,
+    box-shadow 0.28s;
+}
+.katha-world-card:hover {
+  transform: translateY(-3px);
+}
+.katha-world-card.is-current {
+  border: 1.5px solid #f6c98c;
+  box-shadow:
+    0 0 0 1px rgba(250, 208, 164, 0.25),
+    0 0 27px rgba(253, 203, 146, 0.24);
+}
+.katha-world-thumb {
+  position: absolute;
+  inset: 0;
+  background-position: center 47%;
+  background-size: cover;
+  opacity: 0.8;
+  transform: scale(1.035);
+  transition: transform 0.35s;
+}
+.katha-world-card:hover .katha-world-thumb {
+  transform: scale(1.085);
+}
+.katha-world-card:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(14, 17, 35, 0.87) 4%, rgba(14, 17, 35, 0.34) 94%);
+}
+.katha-world-meta {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 44px 15px 17px;
+  min-width: 0;
+}
+.katha-world-meta strong {
+  display: block;
+  font: 500 clamp(1.24rem, 2.5vw, 2rem)/1.1 var(--font-display);
+  white-space: nowrap;
+}
+.katha-world-meta small {
+  display: block;
+  font-size: 0.65rem;
+  line-height: 1.45;
+  color: #e9dae2;
+  margin-top: 5px;
+}
+.katha-world-icon {
+  font-size: 1.8rem;
+  color: #efc5d3;
+  flex: 0 0 auto;
+}
+.katha-world-check {
+  position: absolute;
+  right: 14px;
+  bottom: 18px;
+  z-index: 2;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 247, 227, 0.5);
+  border-radius: 50%;
+  background: rgba(18, 21, 40, 0.4);
+}
+.katha-world-card.is-current .katha-world-check {
+  background: #f9d59e;
+  color: #231a25;
+}
+.katha-cover-stage {
+  height: clamp(310px, 44vw, 445px);
+  position: relative;
+  margin-top: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1300px;
+  overflow: visible;
+  touch-action: pan-y;
+}
+.katha-book-card,
+.katha-cover-sample {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: clamp(176px, 21vw, 245px);
+  height: clamp(252px, 31vw, 365px);
+  border: 1px solid rgba(255, 227, 195, 0.72);
+  border-radius: 10px 18px 18px 10px;
+  box-shadow:
+    0 22px 42px rgba(5, 7, 18, 0.62),
+    inset -8px 0 8px rgba(255, 244, 215, 0.2),
+    0 0 15px rgba(240, 201, 150, 0.24);
+  overflow: visible;
+  text-align: center;
+  transition:
+    transform 0.65s cubic-bezier(0.19, 0.8, 0.24, 1),
+    filter 0.6s,
+    box-shadow 0.6s;
+  transform-origin: center center;
+  backface-visibility: hidden;
+  color: #fff5e9;
+  isolation: isolate;
+}
+.katha-book-card {
+  transform: translate(-50%, -50%) scale(1);
+  background: #1c2239;
+}
+.katha-book-card--sample,
+.katha-book-card--active {
+  box-shadow:
+    0 24px 56px rgba(5, 7, 18, 0.73),
+    0 0 22px rgba(249, 206, 143, 0.42);
+  border-color: #fbdba8;
+}
+.katha-book-card:focus-visible {
+  outline: 3px solid #fff5e3;
+  outline-offset: 5px;
+}
+.katha-cover-photo,
+.katha-cover-tint {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  border-radius: inherit;
+}
+.katha-cover-photo {
+  background-size: cover;
+  background-position: center center;
+  box-shadow: inset -12px 0 20px rgba(0, 0, 0, 0.35);
+}
+.katha-cover-tint {
+  z-index: -1;
+  background: linear-gradient(
+    180deg,
+    rgba(8, 15, 37, 0.33) 0%,
+    rgba(14, 16, 42, 0.62) 48%,
+    rgba(8, 10, 30, 0.72) 100%
+  );
+}
+.katha-cover-ornament {
+  position: absolute;
+  top: 17%;
+  left: 0;
+  right: 0;
+  color: #ffdfb4;
+  font-size: 2.1rem;
+  text-shadow: 0 0 23px #f6c58a;
+}
+.katha-cover-title {
+  position: absolute;
+  top: 38%;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  text-shadow: 0 2px 16px #070e1b;
+}
+.katha-cover-title strong {
+  font: italic 500 clamp(1.7rem, 2.5vw, 2.55rem)/1.04 var(--font-display);
+  overflow-wrap: anywhere;
+}
+.katha-cover-title small {
+  font: 0.57rem var(--font-ui);
+  letter-spacing: 0.18em;
+  color: #f7e2c7;
+}
+.katha-cover-pages {
+  position: absolute;
+  inset: 6px -7px 3px auto;
+  width: 9px;
+  background: repeating-linear-gradient(90deg, #f1dac2 0 1px, #ac8978 1px 2px);
+  border-radius: 0 10px 10px 0;
+  transform: skewY(2deg);
+  z-index: -3;
+}
+.katha-shelf-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 13px;
+  max-width: 560px;
+  margin: -8px auto 0;
+}
+.katha-carousel-arrow {
+  height: 40px;
+  width: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(15, 24, 42, 0.57);
+  flex: 0 0 auto;
+  transition: transform 0.2s;
+}
+.katha-carousel-arrow:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.katha-shelf-progress {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  max-width: 100%;
+  min-width: 0;
+}
+.katha-shelf-progress strong {
+  font: 500 1.3rem/1.13 var(--font-display);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.katha-shelf-progress span {
+  font-size: 0.7rem;
+  margin-top: 6px;
+  color: #ddced2;
+}
+.katha-selected-actions {
+  display: flex;
+  gap: 9px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 19px;
+}
+.katha-selected-actions button {
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 235, 214, 0.38);
+  background: rgba(13, 20, 39, 0.56);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.74rem;
+}
+.katha-discover {
+  padding: clamp(18px, 3vw, 28px);
+  border-radius: 30px;
+  background: rgba(15, 21, 40, 0.62);
+  margin: 12px 0 35px;
+}
+.katha-discover h2 {
+  font-size: clamp(2rem, 3vw, 2.7rem);
+  margin: 0 0 15px;
+}
+.katha-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.katha-feature-grid button {
+  position: relative;
+  padding: 17px 16px;
+  border: 1px solid rgba(252, 232, 203, 0.29);
+  border-radius: 20px;
+  background: rgba(242, 230, 233, 0.09);
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 7px;
+  text-align: left;
+  color: #fff6e8;
+  transition:
+    transform 0.25s,
+    background 0.25s;
+}
+.katha-feature-grid button:hover {
+  transform: translateY(-3px);
+  background: rgba(242, 230, 233, 0.14);
+}
+.katha-feature-grid button svg:first-child {
+  color: #f5cfa2;
+}
+.katha-feature-grid strong {
+  font: 500 1.35rem/1 var(--font-display);
+}
+.katha-feature-grid span {
+  font-size: 0.71rem;
+  color: #e8dfe3;
+}
+.katha-feature-grid button svg:last-child {
+  position: absolute;
+  right: 11px;
+  top: 18px;
+}
+.katha-disclosure {
+  font-size: 0.66rem;
+  color: #e3d5d8;
+  margin-top: 16px;
+}
+.katha-bottom-nav {
+  position: sticky;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 8px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  background: rgba(17, 25, 42, 0.78);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 14px 24px rgba(0, 0, 0, 0.35);
+  padding: 12px;
+  z-index: 10;
+}
+.katha-bottom-nav button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 56px;
+  color: #f5e7da;
+  font-size: 0.7rem;
+}
+.katha-bottom-nav button:hover {
+  color: #f9d59e;
+}
+.katha-bottom-nav button:first-child {
+  color: #f7d19b;
+}
+.katha-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  color: #fff5e6;
+}
+.katha-modal-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 6, 20, 0.75);
+  backdrop-filter: blur(7px);
+}
+.katha-modal {
+  position: relative;
+  width: min(620px, 100%);
+  max-height: 94dvh;
+  overflow: auto;
+  border-radius: 28px 28px 0 0;
+  border: 1px solid rgba(250, 217, 180, 0.49);
+  padding: 24px;
+  background: linear-gradient(145deg, rgba(34, 35, 54, 0.98), rgba(15, 22, 41, 0.99));
+  box-shadow: 0 -18px 60px rgba(0, 0, 0, 0.56);
+  animation: sheet-in 0.4s both;
+}
+.katha-modal-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.katha-modal-head span {
+  font: 0.58rem var(--font-ui);
+  letter-spacing: 0.22em;
+  color: #f9d59e;
+}
+.katha-modal-head h2 {
+  font: 500 2.5rem/1.1 var(--font-display);
+}
+.katha-modal > p {
+  font: 0.91rem/1.5 var(--font-read);
+  color: #e8d9d4;
+  margin-bottom: 12px;
+}
+.katha-field {
+  display: block;
+  width: 100%;
+  border: 1px solid rgba(252, 230, 203, 0.31);
+  background: rgba(8, 13, 31, 0.47);
+  border-radius: 14px;
+  padding: 13px 15px;
+  color: white;
+  outline: none;
+  margin: 10px 0;
+}
+.katha-field:focus {
+  border-color: #f4c78d;
+}
+.katha-field--title {
+  font: 500 1.5rem var(--font-display);
+}
+.katha-text-area {
+  font: 1.07rem/1.55 var(--font-read);
+  resize: vertical;
+  min-height: 130px;
+}
+.katha-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0;
+}
+.katha-modal-note {
+  font-size: 0.68rem !important;
+  color: #cfc2c7 !important;
+}
+.katha-form-error {
+  margin: 12px 0;
+  padding: 10px 12px;
+  border: 1px solid #fdb4b4;
+  border-radius: 11px;
+  background: rgba(85, 21, 37, 0.54);
+  color: #fff1ef;
+  font-size: 0.83rem;
+}
+.katha-save-button {
+  width: 100%;
+  margin-top: 10px;
+}
+.katha-cover-preview {
+  height: 90px;
+  width: 67px;
+  object-fit: cover;
+  border-radius: 7px;
+  margin: 10px auto;
+}
+.katha-cover-sample {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  width: 142px;
+  height: 205px;
+  margin: 10px auto 18px;
+}
+.katha-cover-sample .katha-cover-title strong {
+  font-size: 1.5rem;
+}
+.katha-cover-sample .katha-cover-title {
+  gap: 10px;
+}
+@media (max-width: 640px) {
+  .katha-main-header {
+    padding-top: 4px;
+  }
+  .katha-lotus-mark {
+    width: 46px;
+    height: 46px;
+    font-size: 35px;
+    border-radius: 19px 5px;
+  }
+  .katha-brand-title {
+    font-size: 2.55rem;
+  }
+  .katha-brand-line {
+    font-size: 0.85rem;
+  }
+  .katha-header-actions {
+    gap: 8px;
+  }
+  .katha-round {
+    width: 39px;
+    height: 39px;
+  }
+  .katha-hero {
+    padding-top: clamp(76px, 13vh, 145px);
+    padding-bottom: 64px;
+  }
+  .katha-hero h1 {
+    font-size: clamp(3.1rem, 10.2vw, 4.45rem);
+  }
+  .katha-hero p {
+    max-width: 315px;
+  }
+  .katha-hero-buttons {
+    gap: 9px;
+  }
+  .katha-primary-action {
+    font-size: 0.96rem;
+    padding: 12px 17px;
+  }
+  .katha-outline-action {
+    font-size: 0.81rem;
+  }
+  .katha-hint,
+  .katha-world-meta small {
+    display: none;
+  }
+  .katha-world-grid {
+    gap: 10px;
+  }
+  .katha-world-card {
+    min-height: 98px;
+    border-radius: 19px;
+  }
+  .katha-world-meta {
+    gap: 6px;
+    margin: 0 26px 14px 10px;
+  }
+  .katha-world-meta strong {
+    font-size: 1.35rem;
+    white-space: normal;
+  }
+  .katha-world-icon {
+    font-size: 1.2rem;
+  }
+  .katha-world-check {
+    right: 8px;
+    bottom: 13px;
+    width: 23px;
+    height: 23px;
+  }
+  .katha-cover-stage {
+    height: 350px;
+  }
+  .katha-book-card {
+    width: 200px;
+    height: 282px;
+  }
+  .katha-feature-grid {
+    grid-template-columns: 1fr;
+  }
+  .katha-feature-grid button {
+    min-height: 73px;
+    padding: 12px 15px;
+    gap: 4px;
+  }
+  .katha-feature-grid button strong {
+    font-size: 1.23rem;
+  }
+  .katha-discover {
+    margin-bottom: 20px;
+  }
+  .katha-bottom-nav {
+    bottom: 9px;
+    border-radius: 21px;
+  }
+}
+@media (max-width: 380px) {
+  .katha-home-content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .katha-hero-buttons {
+    flex-direction: column;
+    align-items: start;
+  }
+  .katha-book-card {
+    width: 185px;
+    height: 268px;
+  }
+  .katha-cover-stage {
+    height: 328px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cinematic-world__photo,
+  .cinematic-world__light,
+  .cinematic-world__mist {
+    animation: none !important;
+    transform: none !important;
+  }
+  .katha-book-card,
+  .katha-world-thumb {
+    transition: none !important;
+  }
+}
+[data-reduced="true"] .cinematic-world__photo,
+[data-reduced="true"] .cinematic-world__light,
+[data-reduced="true"] .cinematic-world__mist {
+  animation: none !important;
+  transform: none !important;
+}
 
 /* Immersive reader and annotation studio */
-.katha-reader-screen{color:var(--katha-ivory)}
-.katha-reader-shade{background:linear-gradient(180deg,rgba(10,12,30,.47),rgba(10,12,30,.12) 42%,rgba(9,13,30,.63))}
-.katha-reader-header{padding-top:15px!important;padding-left:clamp(12px,3vw,38px)!important;padding-right:clamp(12px,3vw,38px)!important}
-.katha-reader-header .glass{max-width:620px;background:rgba(19,25,45,.69);border:1px solid rgba(255,236,215,.38);backdrop-filter:blur(24px);box-shadow:0 10px 24px rgba(0,0,0,.2)}
-.katha-reader-header .kicker{color:#f5ce9c}
-.katha-reader-header .font-display{font-size:clamp(1.1rem,2vw,1.6rem);color:#fff2e2}
-.katha-reader-notes-button{border:1px solid rgba(251,225,193,.48);border-radius:999px;padding:11px 14px;background:rgba(14,23,42,.72);backdrop-filter:blur(15px);color:#f4dbb4;white-space:nowrap;font:.78rem var(--font-ui)}
-.katha-reader-notes-button:hover{border-color:#ffdfb4}
-.katha-reader-scroll{padding-top:99px!important;padding-left:clamp(10px,3vw,26px)!important;padding-right:clamp(10px,3vw,26px)!important}
-.katha-reading-page{position:relative;border:1px solid rgba(249,211,173,.56)!important;border-radius:32px!important;background:linear-gradient(156deg,rgba(55,45,66,.84),rgba(24,29,56,.84) 48%,rgba(30,25,47,.86))!important;box-shadow:0 0 0 1px rgba(252,234,212,.07),0 30px 65px rgba(2,6,26,.65),inset 0 0 45px rgba(252,195,151,.085)!important;backdrop-filter:blur(24px) saturate(1.15)!important;min-height:330px;margin-bottom:12px}
-.katha-reading-page:before{content:"";position:absolute;inset:6px;border:1px solid rgba(255,229,185,.19);border-radius:27px;pointer-events:none}
-.katha-reading-page-heading{text-align:center;margin:5px auto 28px;max-width:560px;color:#fff6eb}
-.katha-reading-page-heading>span{font:.6rem var(--font-ui);letter-spacing:.28em;color:#f3caa1}
-.katha-reading-page-heading h1{font:italic 500 clamp(2rem,4vw,3.7rem)/1.03 var(--font-display);margin:15px 0 8px;overflow-wrap:anywhere}
-.katha-page-ornament{font:1.3rem Georgia,serif;color:#e9bc8f;text-shadow:0 0 18px rgba(255,202,154,.85)}
-.katha-reading-page .reader-text{font-size:calc(1.28rem * var(--fs,1))!important;line-height:1.88;color:#fff1e5}
-[data-mode="light"] .katha-reading-page{background:linear-gradient(145deg,rgba(255,244,227,.89),rgba(244,224,206,.91))!important;border-color:rgba(111,79,59,.5)!important}
-[data-mode="light"] .katha-reading-page .reader-text,[data-mode="light"] .katha-reading-page-heading{color:#352438}
-[data-mode="light"] .katha-reading-page-heading>span{color:#8c5946}
-.reader-word--bold{font-weight:800}
-.reader-word--italic{font-style:italic}
-.reader-word--highlight{border-radius:4px;background:rgba(251,200,111,.23);box-shadow:inset 0 -3px 0 rgba(255,203,109,.48)}
-[data-mode="light"] .reader-word--highlight{background:rgba(244,167,53,.24);box-shadow:inset 0 -3px 0 #d5a65c}
-.katha-reading-help{text-align:center;max-width:700px;margin:0 auto 25px;color:#f0e0db;text-shadow:0 2px 16px #050c1d;font-size:.7rem}
-.katha-annotation-toolbar{display:flex;align-items:center;gap:0;max-width:870px;margin:0 auto 9px;padding:7px;border-radius:23px;border:1px solid rgba(250,228,204,.44);background:rgba(21,26,47,.85);backdrop-filter:blur(20px);box-shadow:0 15px 34px rgba(0,0,0,.36);overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
-.katha-annotation-toolbar>button{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:72px;min-height:53px;border-right:1px solid rgba(253,222,192,.18);padding:5px 8px;color:#f5e5dd;font-size:.63rem;transition:color .22s,background .22s}
-.katha-annotation-toolbar>button:hover{color:#fcd69c;background:rgba(250,210,160,.11);border-radius:12px}
-.katha-annotation-toolbar>button svg{color:#f4cfaa}
-.katha-annotation-selection{color:#f4cfa0;white-space:nowrap;font-size:.65rem;margin:0 8px}
-.katha-player-panel{max-width:870px!important;background:rgba(20,26,45,.83)!important;border-color:rgba(251,223,190,.45)!important;box-shadow:0 12px 40px rgba(5,9,29,.57)!important}
-.katha-player-panel .kicker{color:#f3d7b9}
-.katha-annotation-error{max-width:870px;margin:4px auto 10px;background:rgba(80,20,40,.8);border:1px solid #f1aea9;border-radius:9px;font-size:.78rem;padding:8px}
-.katha-parallel-notes{position:fixed;z-index:35;top:92px;right:clamp(10px,3vw,42px);bottom:clamp(174px,21vh,230px);width:min(395px,95vw);display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(253,224,188,.55);border-radius:29px;background:linear-gradient(155deg,rgba(35,41,66,.95),rgba(18,27,49,.97));backdrop-filter:blur(26px);box-shadow:0 24px 54px rgba(0,0,0,.58);color:#fff5e7;padding:18px;animation:rise-in .35s both}
-.katha-notes-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0}
-.katha-notes-heading span{font:.54rem var(--font-ui);letter-spacing:.21em;color:#f1cd9f}
-.katha-notes-heading h2{display:flex;align-items:center;gap:9px;font:500 1.85rem/1.03 var(--font-display);margin-top:6px}
-.katha-notes-heading h2 svg{color:#f2d2af}
-.katha-notes-intro{font:.85rem/1.45 var(--font-read);color:#eedde0;padding-top:10px;padding-bottom:12px;border-bottom:1px solid rgba(255,223,187,.25)}
-.katha-notes-list{overflow:auto;min-height:0;flex:1;padding:12px 2px}
-.katha-note-empty{font:italic 1rem/1.5 var(--font-display);padding:16px 5px;color:#dfd5d8}
-.katha-note-card{border:1px solid rgba(255,227,198,.32);border-radius:18px;background:rgba(238,215,229,.1);padding:15px;margin-bottom:12px;box-shadow:0 5px 14px rgba(2,4,18,.18)}
-.katha-note-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:7px}
-.katha-note-head strong{font:500 1.2rem var(--font-display);color:#ffe3be}
-.katha-note-head button{width:27px;height:27px;display:grid;place-items:center;color:#edd6ca;border-radius:50%;border:1px solid rgba(255,255,255,.2)}
-.katha-note-quote{display:block;text-align:left;font:italic .96rem/1.35 var(--font-read);color:#e9dee4;padding:6px 0;overflow-wrap:anywhere}
-.katha-note-card>p{font:.98rem/1.42 var(--font-read);white-space:pre-wrap;color:#fff5e5;overflow-wrap:anywhere}
-.katha-note-drawing{width:100%;height:auto;max-height:150px;object-fit:contain;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.16);margin-top:8px;border-radius:10px}
-.katha-note-diagram,.katha-diagram-preview{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:10px 0}
-.katha-note-diagram span,.katha-diagram-preview span{display:inline-flex;align-items:center;gap:6px}
-.katha-note-diagram b,.katha-diagram-preview b{padding:6px 8px;border:1px solid rgba(250,220,184,.5);border-radius:8px;background:rgba(250,210,183,.12);font-weight:500;font-size:.8rem}
-.katha-note-add{display:flex;align-items:center;justify-content:center;gap:9px;border:1px solid #eec9a9;border-radius:999px;padding:12px;margin-top:7px;color:#fff0db;font:500 1rem var(--font-display);flex-shrink:0}
-.katha-note-composer{border-top:1px solid rgba(255,228,196,.24);padding:12px 0 2px}
-.katha-note-composer label{display:block;font:.72rem var(--font-ui);margin-bottom:5px;color:#f5d4b2}
-.katha-note-composer textarea{width:100%;min-height:90px;resize:vertical;border:1px solid rgba(255,222,187,.34);border-radius:12px;padding:12px;background:rgba(8,14,27,.58);font:1rem var(--font-read);color:#fff}
-.katha-note-composer small{display:block;font-size:.65rem;color:#d8c6c3;margin-top:6px}
-.katha-note-composer .katha-primary-action{font-size:.9rem;padding:7px 12px;min-height:36px}
-.katha-note-composer .katha-ghost-button{font-size:.75rem;padding:7px 10px;min-height:36px}
-.katha-drawing-modal{width:min(740px,100%)}
-.katha-sketch-canvas{width:100%;height:auto;display:block;background:rgba(9,13,32,.76);border:1px solid rgba(251,213,177,.48);border-radius:14px;touch-action:none}
-.katha-pen-size{display:flex;align-items:center;gap:8px;color:#f1d4ba;font-size:.76rem}
-.katha-diagram-preview{justify-content:center;padding:15px;margin:12px 0;border:1px solid rgba(255,229,196,.25);border-radius:16px;background:rgba(0,0,0,.2)}
-@media(max-width:640px){
-.katha-reader-header{padding:10px!important;gap:7px!important}
-.katha-reader-header .glass{padding:6px 11px!important}
-.katha-reader-header .kicker{font-size:.47rem!important}
-.katha-reader-header .font-display{font-size:1.05rem}
-.katha-reader-notes-button{font-size:.66rem;padding:10px 8px;max-width:116px;white-space:normal;text-align:center}
-.katha-reader-scroll{padding-top:78px!important}
-.katha-reading-page{padding:26px 23px!important;border-radius:22px!important}
-.katha-reading-page-heading h1{font-size:2rem}
-.katha-reading-page .reader-text{font-size:calc(1.22rem * var(--fs,1))!important;line-height:1.79}
-.katha-annotation-toolbar{border-radius:17px;scrollbar-width:none;padding:4px}
-.katha-annotation-toolbar>button{min-width:61px;min-height:47px;font-size:.58rem}
-.katha-annotation-toolbar>button svg{width:17px;height:17px}
-.katha-annotation-selection{display:none}
-.katha-parallel-notes{inset:70px 8px 178px auto;width:min(380px,calc(100vw - 16px));padding:14px;border-radius:21px}
-.katha-notes-heading h2{font-size:1.6rem}
-.katha-player-panel{padding:10px!important}
-.katha-drawing-modal{padding:16px}
+.katha-reader-screen {
+  color: var(--katha-ivory);
 }
-@media(prefers-reduced-motion:reduce){.katha-parallel-notes{animation:none!important}}
+.katha-reader-shade {
+  background: linear-gradient(
+    180deg,
+    rgba(10, 12, 30, 0.47),
+    rgba(10, 12, 30, 0.12) 42%,
+    rgba(9, 13, 30, 0.63)
+  );
+}
+.katha-reader-header {
+  padding-top: 15px !important;
+  padding-left: clamp(12px, 3vw, 38px) !important;
+  padding-right: clamp(12px, 3vw, 38px) !important;
+}
+.katha-reader-header .glass {
+  max-width: 620px;
+  background: rgba(19, 25, 45, 0.69);
+  border: 1px solid rgba(255, 236, 215, 0.38);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+}
+.katha-reader-header .kicker {
+  color: #f5ce9c;
+}
+.katha-reader-header .font-display {
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  color: #fff2e2;
+}
+.katha-reader-notes-button {
+  border: 1px solid rgba(251, 225, 193, 0.48);
+  border-radius: 999px;
+  padding: 11px 14px;
+  background: rgba(14, 23, 42, 0.72);
+  backdrop-filter: blur(15px);
+  color: #f4dbb4;
+  white-space: nowrap;
+  font: 0.78rem var(--font-ui);
+}
+.katha-reader-notes-button:hover {
+  border-color: #ffdfb4;
+}
+.katha-reader-scroll {
+  padding-top: 99px !important;
+  padding-left: clamp(10px, 3vw, 26px) !important;
+  padding-right: clamp(10px, 3vw, 26px) !important;
+}
+.katha-reading-page {
+  position: relative;
+  border: 1px solid rgba(249, 211, 173, 0.56) !important;
+  border-radius: 32px !important;
+  background: linear-gradient(
+    156deg,
+    rgba(55, 45, 66, 0.84),
+    rgba(24, 29, 56, 0.84) 48%,
+    rgba(30, 25, 47, 0.86)
+  ) !important;
+  box-shadow:
+    0 0 0 1px rgba(252, 234, 212, 0.07),
+    0 30px 65px rgba(2, 6, 26, 0.65),
+    inset 0 0 45px rgba(252, 195, 151, 0.085) !important;
+  backdrop-filter: blur(24px) saturate(1.15) !important;
+  min-height: 330px;
+  margin-bottom: 12px;
+}
+.katha-reading-page:before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(255, 229, 185, 0.19);
+  border-radius: 27px;
+  pointer-events: none;
+}
+.katha-reading-page-heading {
+  text-align: center;
+  margin: 5px auto 28px;
+  max-width: 560px;
+  color: #fff6eb;
+}
+.katha-reading-page-heading > span {
+  font: 0.6rem var(--font-ui);
+  letter-spacing: 0.28em;
+  color: #f3caa1;
+}
+.katha-reading-page-heading h1 {
+  font: italic 500 clamp(2rem, 4vw, 3.7rem)/1.03 var(--font-display);
+  margin: 15px 0 8px;
+  overflow-wrap: anywhere;
+}
+.katha-page-ornament {
+  font:
+    1.3rem Georgia,
+    serif;
+  color: #e9bc8f;
+  text-shadow: 0 0 18px rgba(255, 202, 154, 0.85);
+}
+.katha-reading-page .reader-text {
+  font-size: calc(1.28rem * var(--fs, 1)) !important;
+  line-height: 1.88;
+  color: #fff1e5;
+}
+[data-mode="light"] .katha-reading-page {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 244, 227, 0.89),
+    rgba(244, 224, 206, 0.91)
+  ) !important;
+  border-color: rgba(111, 79, 59, 0.5) !important;
+}
+[data-mode="light"] .katha-reading-page .reader-text,
+[data-mode="light"] .katha-reading-page-heading {
+  color: #352438;
+}
+[data-mode="light"] .katha-reading-page-heading > span {
+  color: #8c5946;
+}
+.reader-word--bold {
+  font-weight: 800;
+}
+.reader-word--italic {
+  font-style: italic;
+}
+.reader-word--highlight {
+  border-radius: 4px;
+  background: rgba(251, 200, 111, 0.23);
+  box-shadow: inset 0 -3px 0 rgba(255, 203, 109, 0.48);
+}
+[data-mode="light"] .reader-word--highlight {
+  background: rgba(244, 167, 53, 0.24);
+  box-shadow: inset 0 -3px 0 #d5a65c;
+}
+.katha-reading-help {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 25px;
+  color: #f0e0db;
+  text-shadow: 0 2px 16px #050c1d;
+  font-size: 0.7rem;
+}
+.katha-annotation-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  max-width: 870px;
+  margin: 0 auto 9px;
+  padding: 7px;
+  border-radius: 23px;
+  border: 1px solid rgba(250, 228, 204, 0.44);
+  background: rgba(21, 26, 47, 0.85);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 15px 34px rgba(0, 0, 0, 0.36);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+.katha-annotation-toolbar > button {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 72px;
+  min-height: 53px;
+  border-right: 1px solid rgba(253, 222, 192, 0.18);
+  padding: 5px 8px;
+  color: #f5e5dd;
+  font-size: 0.63rem;
+  transition:
+    color 0.22s,
+    background 0.22s;
+}
+.katha-annotation-toolbar > button:hover {
+  color: #fcd69c;
+  background: rgba(250, 210, 160, 0.11);
+  border-radius: 12px;
+}
+.katha-annotation-toolbar > button svg {
+  color: #f4cfaa;
+}
+.katha-annotation-selection {
+  color: #f4cfa0;
+  white-space: nowrap;
+  font-size: 0.65rem;
+  margin: 0 8px;
+}
+.katha-player-panel {
+  max-width: 870px !important;
+  background: rgba(20, 26, 45, 0.83) !important;
+  border-color: rgba(251, 223, 190, 0.45) !important;
+  box-shadow: 0 12px 40px rgba(5, 9, 29, 0.57) !important;
+}
+.katha-player-panel .kicker {
+  color: #f3d7b9;
+}
+.katha-annotation-error {
+  max-width: 870px;
+  margin: 4px auto 10px;
+  background: rgba(80, 20, 40, 0.8);
+  border: 1px solid #f1aea9;
+  border-radius: 9px;
+  font-size: 0.78rem;
+  padding: 8px;
+}
+.katha-parallel-notes {
+  position: fixed;
+  z-index: 35;
+  top: 92px;
+  right: clamp(10px, 3vw, 42px);
+  bottom: clamp(174px, 21vh, 230px);
+  width: min(395px, 95vw);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(253, 224, 188, 0.55);
+  border-radius: 29px;
+  background: linear-gradient(155deg, rgba(35, 41, 66, 0.95), rgba(18, 27, 49, 0.97));
+  backdrop-filter: blur(26px);
+  box-shadow: 0 24px 54px rgba(0, 0, 0, 0.58);
+  color: #fff5e7;
+  padding: 18px;
+  animation: rise-in 0.35s both;
+}
+.katha-notes-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.katha-notes-heading span {
+  font: 0.54rem var(--font-ui);
+  letter-spacing: 0.21em;
+  color: #f1cd9f;
+}
+.katha-notes-heading h2 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font: 500 1.85rem/1.03 var(--font-display);
+  margin-top: 6px;
+}
+.katha-notes-heading h2 svg {
+  color: #f2d2af;
+}
+.katha-notes-intro {
+  font: 0.85rem/1.45 var(--font-read);
+  color: #eedde0;
+  padding-top: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 223, 187, 0.25);
+}
+.katha-notes-list {
+  overflow: auto;
+  min-height: 0;
+  flex: 1;
+  padding: 12px 2px;
+}
+.katha-note-empty {
+  font: italic 1rem/1.5 var(--font-display);
+  padding: 16px 5px;
+  color: #dfd5d8;
+}
+.katha-note-card {
+  border: 1px solid rgba(255, 227, 198, 0.32);
+  border-radius: 18px;
+  background: rgba(238, 215, 229, 0.1);
+  padding: 15px;
+  margin-bottom: 12px;
+  box-shadow: 0 5px 14px rgba(2, 4, 18, 0.18);
+}
+.katha-note-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 7px;
+}
+.katha-note-head strong {
+  font: 500 1.2rem var(--font-display);
+  color: #ffe3be;
+}
+.katha-note-head button {
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  color: #edd6ca;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.katha-note-quote {
+  display: block;
+  text-align: left;
+  font: italic 0.96rem/1.35 var(--font-read);
+  color: #e9dee4;
+  padding: 6px 0;
+  overflow-wrap: anywhere;
+}
+.katha-note-card > p {
+  font: 0.98rem/1.42 var(--font-read);
+  white-space: pre-wrap;
+  color: #fff5e5;
+  overflow-wrap: anywhere;
+}
+.katha-note-drawing {
+  width: 100%;
+  height: auto;
+  max-height: 150px;
+  object-fit: contain;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  margin-top: 8px;
+  border-radius: 10px;
+}
+.katha-note-diagram,
+.katha-diagram-preview {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 0;
+}
+.katha-note-diagram span,
+.katha-diagram-preview span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.katha-note-diagram b,
+.katha-diagram-preview b {
+  padding: 6px 8px;
+  border: 1px solid rgba(250, 220, 184, 0.5);
+  border-radius: 8px;
+  background: rgba(250, 210, 183, 0.12);
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+.katha-note-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px solid #eec9a9;
+  border-radius: 999px;
+  padding: 12px;
+  margin-top: 7px;
+  color: #fff0db;
+  font: 500 1rem var(--font-display);
+  flex-shrink: 0;
+}
+.katha-note-composer {
+  border-top: 1px solid rgba(255, 228, 196, 0.24);
+  padding: 12px 0 2px;
+}
+.katha-note-composer label {
+  display: block;
+  font: 0.72rem var(--font-ui);
+  margin-bottom: 5px;
+  color: #f5d4b2;
+}
+.katha-note-composer textarea {
+  width: 100%;
+  min-height: 90px;
+  resize: vertical;
+  border: 1px solid rgba(255, 222, 187, 0.34);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(8, 14, 27, 0.58);
+  font: 1rem var(--font-read);
+  color: #fff;
+}
+.katha-note-composer small {
+  display: block;
+  font-size: 0.65rem;
+  color: #d8c6c3;
+  margin-top: 6px;
+}
+.katha-note-composer .katha-primary-action {
+  font-size: 0.9rem;
+  padding: 7px 12px;
+  min-height: 36px;
+}
+.katha-note-composer .katha-ghost-button {
+  font-size: 0.75rem;
+  padding: 7px 10px;
+  min-height: 36px;
+}
+.katha-drawing-modal {
+  width: min(740px, 100%);
+}
+.katha-sketch-canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: rgba(9, 13, 32, 0.76);
+  border: 1px solid rgba(251, 213, 177, 0.48);
+  border-radius: 14px;
+  touch-action: none;
+}
+.katha-pen-size {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #f1d4ba;
+  font-size: 0.76rem;
+}
+.katha-diagram-preview {
+  justify-content: center;
+  padding: 15px;
+  margin: 12px 0;
+  border: 1px solid rgba(255, 229, 196, 0.25);
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.2);
+}
+@media (max-width: 640px) {
+  .katha-reader-header {
+    padding: 10px !important;
+    gap: 7px !important;
+  }
+  .katha-reader-header .glass {
+    padding: 6px 11px !important;
+  }
+  .katha-reader-header .kicker {
+    font-size: 0.47rem !important;
+  }
+  .katha-reader-header .font-display {
+    font-size: 1.05rem;
+  }
+  .katha-reader-notes-button {
+    font-size: 0.66rem;
+    padding: 10px 8px;
+    max-width: 116px;
+    white-space: normal;
+    text-align: center;
+  }
+  .katha-reader-scroll {
+    padding-top: 78px !important;
+  }
+  .katha-reading-page {
+    padding: 26px 23px !important;
+    border-radius: 22px !important;
+  }
+  .katha-reading-page-heading h1 {
+    font-size: 2rem;
+  }
+  .katha-reading-page .reader-text {
+    font-size: calc(1.22rem * var(--fs, 1)) !important;
+    line-height: 1.79;
+  }
+  .katha-annotation-toolbar {
+    border-radius: 17px;
+    scrollbar-width: none;
+    padding: 4px;
+  }
+  .katha-annotation-toolbar > button {
+    min-width: 61px;
+    min-height: 47px;
+    font-size: 0.58rem;
+  }
+  .katha-annotation-toolbar > button svg {
+    width: 17px;
+    height: 17px;
+  }
+  .katha-annotation-selection {
+    display: none;
+  }
+  .katha-parallel-notes {
+    inset: 70px 8px 178px auto;
+    width: min(380px, calc(100vw - 16px));
+    padding: 14px;
+    border-radius: 21px;
+  }
+  .katha-notes-heading h2 {
+    font-size: 1.6rem;
+  }
+  .katha-player-panel {
+    padding: 10px !important;
+  }
+  .katha-drawing-modal {
+    padding: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .katha-parallel-notes {
+    animation: none !important;
+  }
+}
