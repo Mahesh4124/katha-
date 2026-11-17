@@ -59,7 +59,7 @@ export function Reader({
     if (clock.t >= doc.total - 0.01) clock.seek(0);
     clock.play();
     setPlaying(true);
-  }, [clock, doc.total]);
+  }, [clock, doc.total, doc.tokens.length]);
   const pause = useCallback(() => { clock.pause(); setPlaying(false); }, [clock]);
 
   const saveProgress = useCallback(() => {
