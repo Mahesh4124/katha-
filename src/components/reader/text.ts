@@ -14,7 +14,11 @@ export function buildDoc(text: string): Doc {
   const sentenceStarts: number[] = [];
   let t = 0;
   let newSentence = true;
-  const blocks = text.replace(/\r/g, "").split(/\n\s*\n+/).map((b) => b.trim()).filter(Boolean);
+  const blocks = text
+    .replace(/\r/g, "")
+    .split(/\n\s*\n+/)
+    .map((b) => b.trim())
+    .filter(Boolean);
   for (const b of blocks) {
     const pieces: Piece[] = [];
     const deva = DEVA.test(b);
@@ -31,7 +35,13 @@ export function buildDoc(text: string): Doc {
       const len = Array.from(p).length * (DEVA.test(p) ? 0.75 : 1);
       const pause = END.test(p) ? 0.42 : SOFT.test(p) ? 0.18 : 0;
       const dur = 0.13 + len * 0.05 + pause;
-      const tok: Token = { i: tokens.length, text: p, sentence: sentenceStarts.length - 1, start: t, dur };
+      const tok: Token = {
+        i: tokens.length,
+        text: p,
+        sentence: sentenceStarts.length - 1,
+        start: t,
+        dur,
+      };
       tokens.push(tok);
       pieces.push({ w: tok });
       t += dur;

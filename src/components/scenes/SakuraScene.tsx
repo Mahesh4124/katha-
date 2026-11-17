@@ -1,5 +1,12 @@
 import { useRef } from "react";
-import { isLowSpec, offscreen, rng, usePointer, useSceneCanvas, type SceneProps } from "./useSceneCanvas";
+import {
+  isLowSpec,
+  offscreen,
+  rng,
+  usePointer,
+  useSceneCanvas,
+  type SceneProps,
+} from "./useSceneCanvas";
 
 const PAL = {
   light: {
@@ -8,8 +15,11 @@ const PAL = {
     haze: "250,236,236",
     blossom: "244,190,207",
     ground: ["#cdb9c4", "#9a8293"],
-    bark: "#4a3234", barkHi: "#7b5a55",
-    p0: "#fff1f4", p1: "#f2a3ba", center: "#cf4d6c",
+    bark: "#4a3234",
+    barkHi: "#7b5a55",
+    p0: "#fff1f4",
+    p1: "#f2a3ba",
+    center: "#cf4d6c",
   },
   dark: {
     sky: ["#090a19", "#1a1832", "#3a2b47"],
@@ -17,8 +27,11 @@ const PAL = {
     haze: "120,100,150",
     blossom: "196,140,176",
     ground: ["#1b1626", "#0b0912"],
-    bark: "#140d12", barkHi: "#3b2a2e",
-    p0: "#f6dbe6", p1: "#c97a9a", center: "#9a3a57",
+    bark: "#140d12",
+    barkHi: "#3b2a2e",
+    p0: "#f6dbe6",
+    p1: "#c97a9a",
+    center: "#9a3a57",
   },
 };
 type Pal = (typeof PAL)["dark"];
@@ -33,7 +46,15 @@ function petalShape(ctx: CanvasRenderingContext2D, r: number) {
   ctx.closePath();
 }
 
-function blossom(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, rot: number, pal: Pal, R: () => number) {
+function blossom(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  r: number,
+  rot: number,
+  pal: Pal,
+  R: () => number,
+) {
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(rot);
@@ -63,7 +84,13 @@ function blossom(ctx: CanvasRenderingContext2D, x: number, y: number, r: number,
     ctx.lineTo(Math.cos(a) * r * 0.42, Math.sin(a) * r * 0.42);
     ctx.stroke();
     ctx.beginPath();
-    ctx.arc(Math.cos(a) * r * 0.44, Math.sin(a) * r * 0.44, Math.max(0.6, r * 0.05), 0, Math.PI * 2);
+    ctx.arc(
+      Math.cos(a) * r * 0.44,
+      Math.sin(a) * r * 0.44,
+      Math.max(0.6, r * 0.05),
+      0,
+      Math.PI * 2,
+    );
     ctx.fill();
   }
   ctx.fillStyle = pal.center;
@@ -73,7 +100,18 @@ function blossom(ctx: CanvasRenderingContext2D, x: number, y: number, r: number,
   ctx.restore();
 }
 
-function grow(ctx: CanvasRenderingContext2D, x: number, y: number, ang: number, len: number, wid: number, depth: number, pal: Pal, R: () => number, fr: number) {
+function grow(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  ang: number,
+  len: number,
+  wid: number,
+  depth: number,
+  pal: Pal,
+  R: () => number,
+  fr: number,
+) {
   const ex = x + Math.cos(ang) * len;
   const ey = y + Math.sin(ang) * len;
   const bend = (R() - 0.5) * len * 0.4;
@@ -99,7 +137,15 @@ function grow(ctx: CanvasRenderingContext2D, x: number, y: number, ang: number, 
     for (let i = 0; i < n; i++) {
       const a = R() * Math.PI * 2;
       const d = R() * len * 0.35;
-      blossom(ctx, ex + Math.cos(a) * d, ey + Math.sin(a) * d, fr * (0.7 + R() * 0.5), R() * 6, pal, R);
+      blossom(
+        ctx,
+        ex + Math.cos(a) * d,
+        ey + Math.sin(a) * d,
+        fr * (0.7 + R() * 0.5),
+        R() * 6,
+        pal,
+        R,
+      );
     }
     if (depth === 2) {
       const u = 0.5;
@@ -110,19 +156,46 @@ function grow(ctx: CanvasRenderingContext2D, x: number, y: number, ang: number, 
     const kids = R() < 0.35 ? 3 : 2;
     for (let i = 0; i < kids; i++) {
       const spread = (i - (kids - 1) / 2) * (0.5 + R() * 0.3) + (R() - 0.5) * 0.2;
-      grow(ctx, ex, ey, ang + spread + 0.08, len * (0.66 + R() * 0.14), wid * 0.66, depth - 1, pal, R, fr);
+      grow(
+        ctx,
+        ex,
+        ey,
+        ang + spread + 0.08,
+        len * (0.66 + R() * 0.14),
+        wid * 0.66,
+        depth - 1,
+        pal,
+        R,
+        fr,
+      );
     }
   }
 }
 
-type Petal = { x: number; y: number; z: number; rot: number; spin: number; tilt: number; ts: number; s: number; ph: number };
+type Petal = {
+  x: number;
+  y: number;
+  z: number;
+  rot: number;
+  spin: number;
+  tilt: number;
+  ts: number;
+  s: number;
+  ph: number;
+};
 
 export function SakuraScene({ mode, intensity, reduce, mini, className }: SceneProps) {
   const ref = useRef<HTMLCanvasElement>(null);
   const ptr = usePointer();
   const pal = PAL[mode];
   const night = mode === "dark";
-  const st = useRef<{ bg?: HTMLCanvasElement; br?: HTMLCanvasElement; petals: Petal[]; lastT: number; impulse: number }>({ petals: [], lastT: 0, impulse: 0 });
+  const st = useRef<{
+    bg?: HTMLCanvasElement;
+    br?: HTMLCanvasElement;
+    petals: Petal[];
+    lastT: number;
+    impulse: number;
+  }>({ petals: [], lastT: 0, impulse: 0 });
 
   useSceneCanvas(ref, {
     mini,
@@ -136,7 +209,9 @@ export function SakuraScene({ mode, intensity, reduce, mini, className }: SceneP
       ctx.fillStyle = sky;
       ctx.fillRect(0, 0, w, h);
       // sun / crescent moon
-      const mx = w * 0.26, my = h * 0.16, mr = Math.min(w, h) * 0.06;
+      const mx = w * 0.26,
+        my = h * 0.16,
+        mr = Math.min(w, h) * 0.06;
       const halo = ctx.createRadialGradient(mx, my, 0, mx, my, mr * 6);
       halo.addColorStop(0, night ? "rgba(240,220,240,0.22)" : "rgba(255,240,230,0.8)");
       halo.addColorStop(1, "rgba(255,240,240,0)");
@@ -157,7 +232,11 @@ export function SakuraScene({ mode, intensity, reduce, mini, className }: SceneP
       pal.hills.forEach((col, k) => {
         const base = h * bases[k];
         const amp = h * (0.05 + k * 0.012);
-        const yAt = (x: number) => base - amp * (0.6 * Math.sin((x / w) * (2 + k) + k * 1.7) + 0.4 * Math.sin((x / w) * (5 + k) + k)) * 0.8;
+        const yAt = (x: number) =>
+          base -
+          amp *
+            (0.6 * Math.sin((x / w) * (2 + k) + k * 1.7) + 0.4 * Math.sin((x / w) * (5 + k) + k)) *
+            0.8;
         ctx.fillStyle = col;
         ctx.beginPath();
         ctx.moveTo(0, h);
@@ -167,7 +246,9 @@ export function SakuraScene({ mode, intensity, reduce, mini, className }: SceneP
         ctx.fill();
         if (k === 0) {
           // distant pagoda
-          const px = w * 0.74, py = yAt(w * 0.74), ps = Math.max(8, w * 0.028);
+          const px = w * 0.74,
+            py = yAt(w * 0.74),
+            ps = Math.max(8, w * 0.028);
           ctx.fillStyle = pal.hills[1];
           for (let tier = 0; tier < 4; tier++) {
             const ty = py - tier * ps * 1.05;
@@ -185,7 +266,8 @@ export function SakuraScene({ mode, intensity, reduce, mini, className }: SceneP
         }
         const trees = [9, 7, 5][k];
         for (let i = 0; i < trees; i++) {
-          const tx = R() * w, ty = yAt(tx) + 2;
+          const tx = R() * w,
+            ty = yAt(tx) + 2;
           const tr = h * (0.022 + k * 0.016) * (0.7 + R() * 0.6);
           ctx.strokeStyle = col;
           ctx.lineWidth = 1 + k;
@@ -194,10 +276,17 @@ export function SakuraScene({ mode, intensity, reduce, mini, className }: SceneP
           ctx.lineTo(tx + (R() - 0.5) * 3, ty - tr * 1.2);
           ctx.stroke();
           for (let j = 0; j < 16; j++) {
-            const a = R() * Math.PI * 2, d = R() * tr;
+            const a = R() * Math.PI * 2,
+              d = R() * tr;
             ctx.fillStyle = `rgba(${pal.blossom},${0.18 + R() * (0.3 + k * 0.12)})`;
             ctx.beginPath();
-            ctx.arc(tx + Math.cos(a) * d * 1.3, ty - tr * 1.4 + Math.sin(a) * d * 0.8, tr * (0.3 + R() * 0.35), 0, Math.PI * 2);
+            ctx.arc(
+              tx + Math.cos(a) * d * 1.3,
+              ty - tr * 1.4 + Math.sin(a) * d * 0.8,
+              tr * (0.3 + R() * 0.35),
+              0,
+              Math.PI * 2,
+            );
             ctx.fill();
           }
         }
@@ -213,26 +302,64 @@ export function SakuraScene({ mode, intensity, reduce, mini, className }: SceneP
       ctx.fillStyle = gr;
       ctx.beginPath();
       ctx.moveTo(0, h);
-      for (let x = 0; x <= w + 8; x += 10) ctx.lineTo(x, h * 0.84 - Math.sin(x / w * 3 + 1) * h * 0.02);
+      for (let x = 0; x <= w + 8; x += 10)
+        ctx.lineTo(x, h * 0.84 - Math.sin((x / w) * 3 + 1) * h * 0.02);
       ctx.lineTo(w, h);
       ctx.fill();
       for (let i = 0; i < 70; i++) {
         ctx.fillStyle = `rgba(${pal.blossom},${0.3 + R() * 0.5})`;
         ctx.beginPath();
-        ctx.ellipse(R() * w, h * 0.86 + R() * h * 0.14, 2 + R() * 2.5, 1 + R(), R() * 3, 0, Math.PI * 2);
+        ctx.ellipse(
+          R() * w,
+          h * 0.86 + R() * h * 0.14,
+          2 + R() * 2.5,
+          1 + R(),
+          R() * 3,
+          0,
+          Math.PI * 2,
+        );
         ctx.fill();
       }
       // branches (cached)
       const b = offscreen(w, h, dpr);
       const BR = rng(21);
       const unit = Math.min(w, h * 0.7);
-      grow(b.ctx, w + 12, h * 0.1, Math.PI - 0.28, unit * 0.3, unit * 0.04, mini ? 4 : 5, pal, BR, unit * 0.028);
-      grow(b.ctx, -12, h * 0.02, 0.42, unit * 0.2, unit * 0.025, mini ? 3 : 4, pal, BR, unit * 0.024);
+      grow(
+        b.ctx,
+        w + 12,
+        h * 0.1,
+        Math.PI - 0.28,
+        unit * 0.3,
+        unit * 0.04,
+        mini ? 4 : 5,
+        pal,
+        BR,
+        unit * 0.028,
+      );
+      grow(
+        b.ctx,
+        -12,
+        h * 0.02,
+        0.42,
+        unit * 0.2,
+        unit * 0.025,
+        mini ? 3 : 4,
+        pal,
+        BR,
+        unit * 0.024,
+      );
       const count = mini ? 14 : isLowSpec() ? 22 : 40;
       const P = rng(5);
       const petals: Petal[] = Array.from({ length: count }, () => ({
-        x: P() * w, y: P() * h, z: 0.35 + P() * 0.65, rot: P() * 6.28, spin: (P() - 0.5) * 3,
-        tilt: P() * 6.28, ts: 1 + P() * 2.5, s: 4 + P() * 4, ph: P() * 6.28,
+        x: P() * w,
+        y: P() * h,
+        z: 0.35 + P() * 0.65,
+        rot: P() * 6.28,
+        spin: (P() - 0.5) * 3,
+        tilt: P() * 6.28,
+        ts: 1 + P() * 2.5,
+        s: 4 + P() * 4,
+        ph: P() * 6.28,
       }));
       st.current = { bg: c, br: b.c, petals, lastT: 0, impulse: 0 };
     },
@@ -292,7 +419,10 @@ export function SakuraScene({ mode, intensity, reduce, mini, className }: SceneP
         q.tilt += q.ts * dt * (0.5 + Math.abs(wind) * 0.4);
         if (q.x > w + 20) q.x = -20;
         if (q.x < -20) q.x = w + 20;
-        if (q.y > h + 20) { q.y = -20; q.x = ((q.x * 7.31 + 97) % w + w) % w; }
+        if (q.y > h + 20) {
+          q.y = -20;
+          q.x = (((q.x * 7.31 + 97) % w) + w) % w;
+        }
       }
       drawPetals(false);
       // branch sway around anchor
@@ -307,5 +437,12 @@ export function SakuraScene({ mode, intensity, reduce, mini, className }: SceneP
     },
   });
 
-  return <canvas ref={ref} aria-hidden className={className} style={{ width: "100%", height: "100%", display: "block" }} />;
+  return (
+    <canvas
+      ref={ref}
+      aria-hidden
+      className={className}
+      style={{ width: "100%", height: "100%", display: "block" }}
+    />
+  );
 }

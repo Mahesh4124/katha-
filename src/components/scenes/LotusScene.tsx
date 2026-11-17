@@ -7,9 +7,16 @@ const PAL = {
     mountains: ["#262c4c", "#1c2240", "#141a30", "#0c1121"],
     mist: "170,175,225",
     water: ["#151c35", "#0a0e1d", "#04060c"],
-    padA: "#2c4a3a", padB: "#0f2219", vein: "rgba(150,190,160,0.18)",
-    base: "#f1edf6", pinkTip: "#d9789b", whiteTip: "#e3dcec",
-    stamen: "#e9c46a", pod: "#b7c36a", stem: "#1d3528", reed: "#070b10",
+    padA: "#2c4a3a",
+    padB: "#0f2219",
+    vein: "rgba(150,190,160,0.18)",
+    base: "#f1edf6",
+    pinkTip: "#d9789b",
+    whiteTip: "#e3dcec",
+    stamen: "#e9c46a",
+    pod: "#b7c36a",
+    stem: "#1d3528",
+    reed: "#070b10",
     glint: "255,246,220",
   },
   light: {
@@ -17,9 +24,16 @@ const PAL = {
     mountains: ["#bcc6ca", "#a2b1b2", "#859895", "#617a74"],
     mist: "248,243,232",
     water: ["#c4d1cf", "#97afad", "#6b8784"],
-    padA: "#6f9a63", padB: "#2f5a3a", vein: "rgba(230,245,220,0.3)",
-    base: "#fffbf6", pinkTip: "#ec88a9", whiteTip: "#f7edf1",
-    stamen: "#f0b53a", pod: "#cad06a", stem: "#3f6b45", reed: "#25362d",
+    padA: "#6f9a63",
+    padB: "#2f5a3a",
+    vein: "rgba(230,245,220,0.3)",
+    base: "#fffbf6",
+    pinkTip: "#ec88a9",
+    whiteTip: "#f7edf1",
+    stamen: "#f0b53a",
+    pod: "#cad06a",
+    stem: "#3f6b45",
+    reed: "#25362d",
     glint: "255,252,240",
   },
 };
@@ -33,7 +47,15 @@ function petalPath(ctx: CanvasRenderingContext2D, L: number, W: number, bend: nu
   ctx.closePath();
 }
 
-function petal(ctx: CanvasRenderingContext2D, L: number, W: number, bend: number, c0: string, c1: string, shade: number) {
+function petal(
+  ctx: CanvasRenderingContext2D,
+  L: number,
+  W: number,
+  bend: number,
+  c0: string,
+  c1: string,
+  shade: number,
+) {
   petalPath(ctx, L, W, bend);
   const g = ctx.createLinearGradient(0, 0, bend, -L);
   g.addColorStop(0, c0);
@@ -59,7 +81,15 @@ function petal(ctx: CanvasRenderingContext2D, L: number, W: number, bend: number
   ctx.stroke();
 }
 
-function lotus(ctx: CanvasRenderingContext2D, s: number, pal: Pal, t: number, I: number, pink: boolean, dew: boolean) {
+function lotus(
+  ctx: CanvasRenderingContext2D,
+  s: number,
+  pal: Pal,
+  t: number,
+  I: number,
+  pink: boolean,
+  dew: boolean,
+) {
   const c1 = pink ? pal.pinkTip : pal.whiteTip;
   const P = (a: number, L: number, W: number, shade: number) => {
     ctx.save();
@@ -94,14 +124,24 @@ function lotus(ctx: CanvasRenderingContext2D, s: number, pal: Pal, t: number, I:
   ctx.fillStyle = "rgba(60,80,20,0.45)";
   for (let i = 0; i < 7; i++) {
     ctx.beginPath();
-    ctx.arc(Math.cos(i * 0.9) * s * 0.09, -s * 0.02 + Math.sin(i * 0.9) * s * 0.025, s * 0.01, 0, Math.PI * 2);
+    ctx.arc(
+      Math.cos(i * 0.9) * s * 0.09,
+      -s * 0.02 + Math.sin(i * 0.9) * s * 0.025,
+      s * 0.01,
+      0,
+      Math.PI * 2,
+    );
     ctx.fill();
   }
   ctx.restore();
   for (const a of [-1.02, -0.62, 0.62, 1.02]) P(a, s * 0.8, s * 0.34, 0);
   for (const a of [-0.2, 0.2]) P(a, s * 0.42, s * 0.42, 0);
   if (dew) {
-    const drops: [number, number, number][] = [[-s * 0.42, -s * 0.5, 0], [s * 0.5, -s * 0.46, 2], [s * 0.18, -s * 0.36, 4]];
+    const drops: [number, number, number][] = [
+      [-s * 0.42, -s * 0.5, 0],
+      [s * 0.5, -s * 0.46, 2],
+      [s * 0.18, -s * 0.36, 4],
+    ];
     for (const [x, y, ph] of drops) {
       const tw = 0.55 + 0.45 * Math.sin(t * 1.7 + ph);
       const r = s * 0.028;
@@ -126,13 +166,26 @@ function bud(ctx: CanvasRenderingContext2D, s: number, pal: Pal) {
   }
 }
 
-type Flower = { x: number; y: number; s: number; sh: number; ph: number; kind: "lotus" | "bud"; pink: boolean; dew: boolean };
+type Flower = {
+  x: number;
+  y: number;
+  s: number;
+  sh: number;
+  ph: number;
+  kind: "lotus" | "bud";
+  pink: boolean;
+  dew: boolean;
+};
 type Pad = { x: number; y: number; r: number; rot: number; ph: number };
 
 export function LotusScene({ mode, intensity, reduce, mini, className }: SceneProps) {
   const ref = useRef<HTMLCanvasElement>(null);
   const ptr = usePointer();
-  const st = useRef<{ bg?: HTMLCanvasElement; H: number; flowers: Flower[]; pads: Pad[] }>({ H: 0, flowers: [], pads: [] });
+  const st = useRef<{ bg?: HTMLCanvasElement; H: number; flowers: Flower[]; pads: Pad[] }>({
+    H: 0,
+    flowers: [],
+    pads: [],
+  });
   const pal = PAL[mode];
   const night = mode === "dark";
 
@@ -148,7 +201,9 @@ export function LotusScene({ mode, intensity, reduce, mini, className }: ScenePr
       ctx.fillStyle = sky;
       ctx.fillRect(0, 0, w, H + 2);
       // moon or diffuse sun
-      const mx = w * 0.7, my = H * 0.36, mr = Math.min(w, h) * (night ? 0.11 : 0.09);
+      const mx = w * 0.7,
+        my = H * 0.36,
+        mr = Math.min(w, h) * (night ? 0.11 : 0.09);
       const halo = ctx.createRadialGradient(mx, my, mr * 0.8, mx, my, mr * 5);
       halo.addColorStop(0, night ? "rgba(255,240,210,0.28)" : "rgba(255,250,235,0.7)");
       halo.addColorStop(1, "rgba(255,240,210,0)");
@@ -163,7 +218,12 @@ export function LotusScene({ mode, intensity, reduce, mini, className }: ScenePr
       ctx.fill();
       if (night) {
         ctx.fillStyle = "rgba(150,140,110,0.12)";
-        for (const [dx, dy, r] of [[-0.3, -0.2, 0.28], [0.25, 0.1, 0.22], [-0.05, 0.38, 0.18], [0.35, -0.35, 0.12]]) {
+        for (const [dx, dy, r] of [
+          [-0.3, -0.2, 0.28],
+          [0.25, 0.1, 0.22],
+          [-0.05, 0.38, 0.18],
+          [0.35, -0.35, 0.12],
+        ]) {
           ctx.beginPath();
           ctx.ellipse(mx + dx * mr, my + dy * mr, r * mr, r * mr * 0.8, 0.4, 0, Math.PI * 2);
           ctx.fill();
@@ -182,7 +242,10 @@ export function LotusScene({ mode, intensity, reduce, mini, className }: ScenePr
           const u = x / w;
           const y =
             base -
-            amp * (0.55 * Math.abs(Math.sin(u * (2.2 + k) + seed)) + 0.3 * Math.sin(u * (6 + k * 2) + seed * 3) * 0.5 + 0.25 * Math.abs(Math.sin(u * 13 + seed)) * 0.4) -
+            amp *
+              (0.55 * Math.abs(Math.sin(u * (2.2 + k) + seed)) +
+                0.3 * Math.sin(u * (6 + k * 2) + seed * 3) * 0.5 +
+                0.25 * Math.abs(Math.sin(u * 13 + seed)) * 0.4) -
             amp * 0.2;
           ctx.lineTo(x, y);
         }
@@ -191,7 +254,9 @@ export function LotusScene({ mode, intensity, reduce, mini, className }: ScenePr
         ctx.fill();
         if (k === 2) {
           // small shikhara temple on the far shore
-          const tx = w * 0.16, ty = H - h * 0.006, ts = Math.max(10, w * 0.035);
+          const tx = w * 0.16,
+            ty = H - h * 0.006,
+            ts = Math.max(10, w * 0.035);
           ctx.fillStyle = pal.mountains[3];
           ctx.beginPath();
           ctx.moveTo(tx - ts, ty);
@@ -205,7 +270,8 @@ export function LotusScene({ mode, intensity, reduce, mini, className }: ScenePr
           ctx.fillRect(tx + ts * 0.9, ty - ts * 0.9, ts * 1.4, ts * 0.9);
           // trees along the shore
           for (let i = 0; i < 26; i++) {
-            const x = R() * w, r = h * (0.01 + R() * 0.018);
+            const x = R() * w,
+              r = h * (0.01 + R() * 0.018);
             ctx.beginPath();
             ctx.ellipse(x, H - r * 0.5, r * 1.3, r, 0, 0, Math.PI * 2);
             ctx.fill();
@@ -237,9 +303,27 @@ export function LotusScene({ mode, intensity, reduce, mini, className }: ScenePr
 
       const S = Math.min(w * 0.2, h * 0.11, 150);
       const flowers: Flower[] = [
-        { x: 0.58, y: H / h + 0.12, s: S * 0.42, sh: S * 0.5, ph: 2.1, kind: "lotus", pink: true, dew: false },
+        {
+          x: 0.58,
+          y: H / h + 0.12,
+          s: S * 0.42,
+          sh: S * 0.5,
+          ph: 2.1,
+          kind: "lotus",
+          pink: true,
+          dew: false,
+        },
         { x: 0.12, y: 0.73, s: S * 0.5, sh: S * 1.1, ph: 4, kind: "bud", pink: true, dew: false },
-        { x: 0.8, y: 0.79, s: S * 0.75, sh: S * 0.75, ph: 1.2, kind: "lotus", pink: false, dew: true },
+        {
+          x: 0.8,
+          y: 0.79,
+          s: S * 0.75,
+          sh: S * 0.75,
+          ph: 1.2,
+          kind: "lotus",
+          pink: false,
+          dew: true,
+        },
         { x: 0.3, y: 0.88, s: S, sh: S * 0.95, ph: 0, kind: "lotus", pink: true, dew: true },
         { x: 0.94, y: 0.93, s: S * 0.6, sh: S * 1.3, ph: 3, kind: "bud", pink: false, dew: false },
       ];
@@ -261,7 +345,8 @@ export function LotusScene({ mode, intensity, reduce, mini, className }: ScenePr
       p.x += (p.tx - p.x) * 0.04;
       p.y += (p.ty - p.y) * 0.04;
       ctx.drawImage(bg, 0, 0, w, h);
-      const gust = (Math.sin(t * 0.23) * 0.6 + Math.sin(t * 0.71 + 1) * 0.3 + Math.sin(t * 1.7) * 0.1) * I;
+      const gust =
+        (Math.sin(t * 0.23) * 0.6 + Math.sin(t * 0.71 + 1) * 0.3 + Math.sin(t * 1.7) * 0.1) * I;
 
       // moon/sun path on water
       const mx = w * 0.7;
@@ -278,7 +363,7 @@ export function LotusScene({ mode, intensity, reduce, mini, className }: ScenePr
       ctx.lineWidth = 1;
       for (let i = 0; i < 18; i++) {
         const y = H + 6 + ((i * 41.3) % (h - H - 6));
-        const x = ((i * 97 + t * (6 + i % 3) * I) % (w + 200)) - 100;
+        const x = ((i * 97 + t * (6 + (i % 3)) * I) % (w + 200)) - 100;
         ctx.strokeStyle = `rgba(${pal.mist},${night ? 0.05 : 0.12})`;
         ctx.beginPath();
         ctx.moveTo(x, y);
@@ -333,11 +418,19 @@ export function LotusScene({ mode, intensity, reduce, mini, className }: ScenePr
         const tipY = wy - f.sh;
         // ripples around stem
         for (let k = 0; k < 2; k++) {
-          const rr = ((t * 0.22 * (0.4 + I) + f.ph * 0.13 + k * 0.5) % 1 + 1) % 1;
+          const rr = (((t * 0.22 * (0.4 + I) + f.ph * 0.13 + k * 0.5) % 1) + 1) % 1;
           ctx.strokeStyle = `rgba(${pal.mist},${(1 - rr) * (night ? 0.22 : 0.4)})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
-          ctx.ellipse(x0, wy, f.s * 0.2 + rr * f.s * 1.2, (f.s * 0.2 + rr * f.s * 1.2) * 0.22, 0, 0, Math.PI * 2);
+          ctx.ellipse(
+            x0,
+            wy,
+            f.s * 0.2 + rr * f.s * 1.2,
+            (f.s * 0.2 + rr * f.s * 1.2) * 0.22,
+            0,
+            0,
+            Math.PI * 2,
+          );
           ctx.stroke();
         }
         const drawOne = () => {
@@ -374,7 +467,9 @@ export function LotusScene({ mode, intensity, reduce, mini, className }: ScenePr
         const left = i < reeds * 0.6;
         const bx = left ? i * w * 0.025 : w - (i - reeds * 0.6) * w * 0.03;
         const len = h * (0.18 + ((i * 37) % 10) / 60);
-        const lean = (left ? 1 : -1) * len * 0.15 + (Math.sin(t * 0.9 + i) * 0.04 + gust * 0.05) * len * (0.3 + I);
+        const lean =
+          (left ? 1 : -1) * len * 0.15 +
+          (Math.sin(t * 0.9 + i) * 0.04 + gust * 0.05) * len * (0.3 + I);
         const bw = 2 + (i % 3);
         ctx.beginPath();
         ctx.moveTo(bx - bw, h + 2);
@@ -385,5 +480,12 @@ export function LotusScene({ mode, intensity, reduce, mini, className }: ScenePr
     },
   });
 
-  return <canvas ref={ref} aria-hidden className={className} style={{ width: "100%", height: "100%", display: "block" }} />;
+  return (
+    <canvas
+      ref={ref}
+      aria-hidden
+      className={className}
+      style={{ width: "100%", height: "100%", display: "block" }}
+    />
+  );
 }
