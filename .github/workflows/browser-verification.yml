@@ -22,8 +22,8 @@ jobs:
         run: bun run build
       - name: Install isolated browser-test tooling
         run: |
-          npm install --no-save --package-lock=false playwright
-          npx playwright install --with-deps chromium
+          bun add --no-save playwright
+          bunx playwright install chromium
       - name: Start local production preview
         shell: bash
         run: |
