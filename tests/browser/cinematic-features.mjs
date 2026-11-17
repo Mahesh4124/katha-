@@ -73,7 +73,7 @@ try {
     await page.getByRole("button", { name: "Back to library" }).click();
     await page.reload({ waitUntil: "domcontentloaded" });
     await page.getByRole("button", { name: "Open The River Between Us" }).click();
-    await page.getByRole("button", { name: "Open parallel notes" }).click();
+    await page.getByRole("button", { name: /Parallel notes/ }).click();
     await page.getByText("This phrase deserves a note.").waitFor();
     assert.ok(await page.locator(".reader-word--bold").count() >= 1,
       "rich text marks must survive reload");

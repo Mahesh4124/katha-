@@ -329,7 +329,7 @@ export function Reader({
         <button
           className="katha-reader-notes-button"
           onClick={() => setNotesOpen(!notesOpen)}
-          aria-label="Open parallel notes"
+          
           aria-expanded={notesOpen}
         >
           Parallel notes · {annotations.length}
