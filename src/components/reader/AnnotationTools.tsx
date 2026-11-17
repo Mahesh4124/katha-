@@ -1,4 +1,4 @@
-import { useRef, useState, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
 import {
   ArrowRight, Bold, BookOpen, Check, ChevronDown, Eraser,
   Highlighter, Italic, MessageSquare, Network, PenTool,
@@ -36,7 +36,7 @@ export function AnnotationToolbar({
 }
 
 export function ParallelNotes({
-  notes, onClose, onAdd, onRemove, onJump, anchor, visible,
+  notes, onClose, onAdd, onRemove, onJump, anchor, visible, commentSignal = 0,
 }: {
   notes: Annotation[];
   onClose: () => void;
@@ -45,11 +45,13 @@ export function ParallelNotes({
   onJump: (index: number) => void;
   anchor: TextAnchor | null;
   visible: boolean;
+  commentSignal?: number;
 }) {
   const [draft, setDraft] = useState("");
   const [composing, setComposing] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  useEffect(() => { if (commentSignal > 0) setComposing(true); }, [commentSignal]);
   if (!visible) return null;
   return <aside className="katha-parallel-notes" role="complementary" aria-label="Parallel notes">
     <div className="katha-notes-heading">
