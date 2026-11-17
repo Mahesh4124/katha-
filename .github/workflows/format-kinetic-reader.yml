@@ -1,0 +1,36 @@
+name: Prepare and verify kinetic frontend
+on:
+  push:
+    branches:
+      - frontend/kinetic-book-mockup-parity-20261117
+    paths:
+      - .github/workflows/format-kinetic-reader.yml
+permissions:
+  contents: write
+jobs:
+  format-and-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install locked dependencies
+        run: bun install --frozen-lockfile
+      - name: Format changed frontend sources
+        run: bunx prettier --write src/components/library/Library.tsx src/components/scenes/Scene.tsx src/routes/index.tsx src/components/reader/BookFlight.tsx src/components/reader/Reader.tsx src/cinematic.css
+      - name: Typecheck, lint, security audit and build
+        run: |
+          bunx tsc --noEmit
+          bunx eslint src
+          bun run test
+          bun run build
+          bun audit --prod
+      - name: Commit verified formatting changes
+        run: |
+          git add src/components/library/Library.tsx src/components/scenes/Scene.tsx src/routes/index.tsx src/components/reader/BookFlight.tsx src/components/reader/Reader.tsx src/cinematic.css
+          git diff --cached --quiet && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Format verified professional Motion reader transitions"
+          git push origin HEAD:frontend/kinetic-book-mockup-parity-20261117

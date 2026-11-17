@@ -43,6 +43,8 @@ jobs:
         run: node tests/browser/lifecycle-storage.mjs
       - name: Cinematic frontend, covers and annotation persistence
         run: node tests/browser/cinematic-features.mjs
+      - name: Cover-flight and scene-motion acceptance
+        run: node tests/browser/book-flight.mjs
       - name: Automated accessibility audit
         run: node tests/browser/accessibility.mjs
       - name: Upload visual QA screenshots
