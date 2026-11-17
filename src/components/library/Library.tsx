@@ -57,7 +57,7 @@ async function prepareCover(file: File): Promise<string> {
   }
 }
 
-function CoverArt({ book }: { book: Book }) {
+export function CoverArt({ book }: { book: Book }) {
   const variants: Array<"lotus" | "sakura"> = ["lotus", "sakura", "lotus", "sakura"];
   const number = Array.from(book.title).reduce((n, c) => n + (c.codePointAt(0) || 0), 0);
   const theme = variants[number % variants.length];
