@@ -178,7 +178,7 @@ export function Library({ prefs, setPrefs, books, error, onDemo, onOpen, onDelet
               const visible = Math.abs(offset) < 3;
               return <button key={book.id}
                 className={"katha-book-card " + (offset === 0 ? "katha-book-card--active" : "")}
-                style={{ "--book-offset": offset, zIndex: 10 - Math.abs(offset), visibility: visible ? "visible" : "hidden" } as CSSProperties}
+                style={{ transform: "translate(calc(-50% + " + (offset * 151) + "px), -50%) rotateY(" + (-offset * 13) + "deg) scale(" + Math.max(0.62, 1 - Math.abs(offset) * 0.22) + ")", zIndex: 10 - Math.abs(offset), visibility: visible ? "visible" : "hidden", opacity: visible ? 1 : 0 } as CSSProperties}
                 tabIndex={visible ? 0 : -1}
                 aria-label={(offset === 0 ? "Open " : "Select ") + book.title}
                 onClick={() => offset === 0 ? onOpen(book) : setSelected(index)}>
