@@ -20,7 +20,8 @@ jobs:
       - name: Check TypeScript types
         run: bunx tsc --noEmit
       - name: Check code correctness (formatting tracked separately)
-        run: bunx eslint src --rule 'prettier/prettier: off'
+        run: >-
+          bunx eslint src --rule 'prettier/prettier: off'
       - name: Run regression tests
         run: bun run test
       - name: Build application
