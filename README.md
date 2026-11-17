@@ -1,2 +1,2 @@
 # katha-
-the reading app
+The living Reader
