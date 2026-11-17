@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from "motion/react";
 import type { CSSProperties } from "react";
 import type { ThemeId } from "@/lib/storage";
 import type { SceneProps } from "./useSceneCanvas";
@@ -31,7 +32,6 @@ export function Scene({
   const css = { "--world-drift": motion } as CSSProperties;
   return (
     <div
-      key={theme + mode}
       aria-hidden="true"
       data-scene={theme}
       data-scene-mode={mode}
@@ -39,14 +39,25 @@ export function Scene({
       className={`cinematic-world cinematic-world--${theme} cinematic-world--${mode} ${mini ? "cinematic-world--mini" : ""} ${className}`}
       style={css}
     >
-      <img
-        className="cinematic-world__photo"
-        src={SCENE_ART[theme][mode]}
-        alt=""
-        loading={mini ? "lazy" : "eager"}
-        decoding="async"
-        draggable={false}
-      />
+      <AnimatePresence initial={false}>
+        <motion.div
+          key={theme + mode}
+          className="cinematic-world__photo-frame"
+          initial={mini || reduce ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={mini || reduce ? { opacity: 0 } : { opacity: 0 }}
+          transition={{ duration: mini || reduce ? 0 : 1.05, ease: [0.2, 0.8, 0.2, 1] }}
+        >
+          <img
+            className="cinematic-world__photo"
+            src={SCENE_ART[theme][mode]}
+            alt=""
+            loading={mini ? "lazy" : "eager"}
+            decoding="async"
+            draggable={false}
+          />
+        </motion.div>
+      </AnimatePresence>
       <div className="cinematic-world__light" />
       {!mini && <div className="cinematic-world__mist" />}
       <div className="cinematic-world__grade" />

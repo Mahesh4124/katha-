@@ -303,7 +303,7 @@ export function Reader({
   const set = (patch: Partial<Prefs>) => setPrefs({ ...prefs, ...patch });
 
   return (
-    <div className="page-in katha-reader-screen fixed inset-0 overflow-hidden">
+    <div className="page-in katha-reader-screen katha-reader-arrival fixed inset-0 overflow-hidden">
       <div className="absolute inset-0">
         <Scene
           theme={prefs.theme}

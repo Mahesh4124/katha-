@@ -1386,3 +1386,120 @@
     animation: none !important;
   }
 }
+
+
+/* Motion-driven book-to-reader handoff; cover hinges before the page arrives. */
+.katha-book-flight {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  perspective: 1400px;
+  overflow: hidden;
+}
+.katha-book-flight__veil {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, rgba(18, 25, 49, 0.26), rgba(4, 8, 24, 0.86));
+  backdrop-filter: blur(9px);
+}
+.katha-book-flight__space {
+  position: absolute;
+  inset: 0;
+  perspective: 1500px;
+  transform-style: preserve-3d;
+}
+.katha-book-flight__volume {
+  position: absolute;
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 22px 36px rgba(0, 0, 0, 0.56));
+}
+.katha-book-flight__page-stack {
+  position: absolute;
+  inset: 1px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 215, 158, 0.92);
+  border-radius: 7px 17px 17px 7px;
+  background: linear-gradient(100deg, #c8a081, #fff4e3 12%, #f4e1c9 88%, #b3876a);
+  box-shadow: 8px 5px 0 -2px #e9d6bc, 11px 8px 0 -4px #94785f;
+}
+.katha-book-flight__page-ink {
+  position: absolute;
+  inset: 11% 12%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 14px;
+  color: #6f493b;
+}
+.katha-book-flight__page-ink > span:first-child {
+  font-size: 2rem;
+  color: #c48b60;
+}
+.katha-book-flight__page-ink small {
+  font: 0.5rem var(--font-ui);
+  letter-spacing: 0.3em;
+}
+.katha-book-flight__page-ink strong {
+  font: italic 500 clamp(1.5rem, 5vw, 2.2rem) / 1.1 var(--font-display);
+}
+.katha-book-flight__ornament {
+  color: #bd9172;
+}
+.katha-book-flight__cover {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+  background: #1e2840;
+  border: 1.5px solid rgba(254, 225, 179, 0.95);
+  border-radius: 9px 18px 18px 8px;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  box-shadow: 2px 9px 21px rgba(17, 12, 33, 0.43), inset 8px 0 16px rgba(4, 8, 23, 0.32);
+}
+.katha-book-flight__cover-back {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, #a47860, #e5cbb0 12%, #f9e6d2);
+  transform: rotateY(180deg) translateZ(1px);
+  backface-visibility: hidden;
+  border-radius: inherit;
+}
+body:has(.katha-book-flight) .katha-book-card--active {
+  opacity: 0 !important;
+}
+.cinematic-world__photo-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  will-change: opacity;
+}
+.katha-reader-arrival .katha-reading-page {
+  animation: katha-reader-page-arrive 0.64s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes katha-reader-page-arrive {
+  from { opacity: 0; transform: perspective(1100px) rotateY(-5deg) translateY(15px) scale(0.97); }
+  to { opacity: 1; transform: perspective(1100px) rotateY(0deg) translateY(0) scale(1); }
+}
+.katha-book-card--active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(112deg, transparent 23%, rgba(255, 235, 191, 0.08) 37%, rgba(255, 250, 235, 0.3) 50%, transparent 63%);
+  background-size: 200% 100%;
+  animation: katha-cover-sheen 5.7s ease-in-out infinite;
+}
+@keyframes katha-cover-sheen {
+  0%, 35% { background-position: 165% 0; opacity: 0; }
+  54% { opacity: 0.8; }
+  75%, 100% { background-position: -30% 0; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .katha-reader-arrival .katha-reading-page { animation: none !important; }
+  .katha-book-card--active::after { animation: none !important; }
+}

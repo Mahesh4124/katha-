@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { Library } from "@/components/library/Library";
 import { Reader, type ReaderBook } from "@/components/reader/Reader";
+import { BookFlight, type BookRect } from "@/components/reader/BookFlight";
 import { DEMO_TEXT, DEMO_TITLE } from "@/lib/demo";
 import {
   DEFAULT_PREFS,
@@ -43,6 +44,7 @@ function App() {
   const [books, setBooks] = useState<Book[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState<{ book: ReaderBook; autoplay: boolean } | null>(null);
+  const [opening, setOpening] = useState<{ book: Book; origin: BookRect } | null>(null);
 
   const refresh = useCallback(async () => {
     try {
@@ -64,6 +66,25 @@ function App() {
   const onProgress = useCallback((id: string, idx: number) => {
     updateProgress(id, idx).catch(() => setError("Could not save reading progress."));
   }, []);
+
+  const openFromShelf = (book: Book) => {
+    if (opening) return;
+    const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    const card = document.querySelector<HTMLElement>(".katha-book-card--active");
+    if (prefs.reduceMotion || prefersReduced || !card) {
+      setOpen({ book, autoplay: false });
+      return;
+    }
+    const bounds = card.getBoundingClientRect();
+    if (bounds.width < 10 || bounds.height < 10) {
+      setOpen({ book, autoplay: false });
+      return;
+    }
+    setOpening({
+      book,
+      origin: { x: bounds.x, y: bounds.y, width: bounds.width, height: bounds.height },
+    });
+  };
 
   return (
     <div data-mode={prefs.mode} className="min-h-screen bg-background text-foreground">
@@ -89,7 +110,7 @@ function App() {
           onDemo={() =>
             setOpen({ book: { title: DEMO_TITLE, text: DEMO_TEXT, demo: true }, autoplay: true })
           }
-          onOpen={(b) => setOpen({ book: b, autoplay: false })}
+          onOpen={openFromShelf}
           onDelete={async (id) => {
             try {
               await deleteBook(id);
@@ -112,6 +133,16 @@ function App() {
               coverImage,
             });
             await refresh();
+          }}
+        />
+      )}
+      {opening && (
+        <BookFlight
+          book={opening.book}
+          origin={opening.origin}
+          onComplete={() => {
+            setOpen({ book: opening.book, autoplay: false });
+            setOpening(null);
           }}
         />
       )}
