@@ -127,7 +127,7 @@ export function Library({
     element?.scrollIntoView({ behavior: prefs.reduceMotion ? "instant" : "smooth" });
 
   return (
-    <div className="katha-home page-in relative min-h-screen" data-world={prefs.theme}>
+    <div className="katha-home relative min-h-screen" data-world={prefs.theme}>
       <div className="fixed inset-0 pointer-events-none">
         <Scene
           theme={prefs.theme}

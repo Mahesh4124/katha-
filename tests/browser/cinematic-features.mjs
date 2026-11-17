@@ -22,6 +22,8 @@ try {
     await page.goto(base, { waitUntil: "domcontentloaded" });
     await page.getByRole("button", { name: "Try different styles" }).waitFor();
     const scene = page.locator("[data-scene]");
+    const frame = await scene.first().evaluate((el) => el.getBoundingClientRect().toJSON());
+    assert.ok(Math.abs(frame.top) < 2 && Math.abs(frame.height - 844) < 2, "scene must fill VIEWPORT, not scrollable document: " + JSON.stringify(frame));
     assert.equal(await scene.first().getAttribute("data-scene"), "lotus");
     assert.equal(await page.locator(".cinematic-world img").first().count(), 1);
     assert.ok(await page.locator(".cinematic-world img").first().evaluate((img) => img.complete && img.naturalWidth >= 900),
@@ -65,7 +67,7 @@ try {
     await page.getByRole("button", { name: "Comment", exact: true }).click();
     await page.getByLabel("New comment").fill("This phrase deserves a note.");
     await page.getByRole("button", { name: "Save comment" }).click();
-    await page.getByText("This phrase deserves a note.").waitFor();
+    await page.locator(".katha-note-card > p").filter({ hasText: "This phrase deserves a note." }).first().waitFor();
     await page.screenshot({ path: "test-results/cinematic/notes-" + width + ".png" });
     await page.getByRole("button", { name: "Close parallel notes" }).click();
     await page.getByRole("button", { name: "Back to library" }).click();
