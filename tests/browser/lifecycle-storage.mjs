@@ -12,7 +12,7 @@ try {
     const errors = [];
     page.on("pageerror", (error) => errors.push(error.message));
     await page.goto(origin, { waitUntil: "domcontentloaded" });
-    await page.getByRole("button", { name: "Open sample reading" }).click();
+    await page.getByRole("button", { name: /Open sample reading/ }).click();
     await page.getByRole("button", { name: "Pause" }).waitFor();
     await page.evaluate(() => {
       Object.defineProperty(document, "hidden", { configurable: true, get: () => true });

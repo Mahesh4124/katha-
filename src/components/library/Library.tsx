@@ -284,7 +284,7 @@ export function Library({
               <button
                 className="katha-book-card katha-book-card--sample"
                 onClick={onDemo}
-                aria-label="Open sample reading"
+                aria-label="A first light, Open sample reading"
               >
                 <span
                   className="katha-cover-photo"
@@ -378,7 +378,7 @@ export function Library({
                 <ImagePlus size={16} /> Change cover
               </button>
               <button
-                aria-label={"Delete " + activeBook.title}
+                aria-label={"Remove " + activeBook.title}
                 onClick={() => onDelete(activeBook.id)}
               >
                 <Trash2 size={16} /> Remove

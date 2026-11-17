@@ -52,10 +52,10 @@
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(8, 11, 31, 0.22) 0%,
-    rgba(9, 12, 29, 0.14) 37%,
-    rgba(9, 12, 29, 0.36) 77%,
-    rgba(5, 10, 22, 0.77) 100%
+    rgba(8, 11, 31, 0.04) 0%,
+    rgba(9, 12, 29, 0.03) 37%,
+    rgba(9, 12, 29, 0.13) 77%,
+    rgba(5, 10, 22, 0.45) 100%
   );
 }
 .cinematic-world--light .cinematic-world__grade {
@@ -69,9 +69,9 @@
 .cinematic-world--sakura .cinematic-world__grade {
   background: linear-gradient(
     180deg,
-    rgba(35, 16, 42, 0.37),
-    rgba(27, 19, 44, 0.23) 45%,
-    rgba(18, 18, 38, 0.83)
+    rgba(35, 16, 42, 0.14),
+    rgba(27, 19, 44, 0.10) 45%,
+    rgba(18, 18, 38, 0.43)
   );
 }
 .cinematic-world--mini .cinematic-world__photo {
@@ -115,11 +115,11 @@
   background:
     linear-gradient(
       90deg,
-      rgba(8, 14, 30, 0.45) 0%,
-      rgba(8, 14, 30, 0.16) 62%,
-      rgba(8, 14, 30, 0.3) 100%
+      rgba(8, 14, 30, 0.18) 0%,
+      rgba(8, 14, 30, 0.06) 62%,
+      rgba(8, 14, 30, 0.14) 100%
     ),
-    linear-gradient(180deg, transparent 12%, rgba(8, 10, 24, 0.44) 68%, rgba(8, 10, 24, 0.7) 100%);
+    linear-gradient(180deg, transparent 12%, rgba(8, 10, 24, 0.2) 68%, rgba(8, 10, 24, 0.46) 100%);
 }
 .katha-home-content {
   width: 100%;
