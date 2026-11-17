@@ -1,0 +1,45 @@
+name: Review-safe formatting
+
+on:
+  push:
+    branches:
+      - hardening/dependency-remediation-20261117
+    paths:
+      - .github/workflows/format-and-verify.yml
+
+permissions:
+  contents: write
+
+jobs:
+  format-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install locked dependencies
+        run: bun install --frozen-lockfile --ignore-scripts
+      - name: Apply Prettier formatting to source only
+        run: bunx prettier --write src
+      - name: Verify formatting is clean
+        run: bunx prettier --check src
+      - name: Verify full source ESLint
+        run: bunx eslint src
+      - name: Typecheck
+        run: bunx tsc --noEmit
+      - name: Regression tests
+        run: bun run test
+      - name: Production build
+        run: bun run build
+      - name: Commit verified formatting changes to review branch
+        run: |
+          git add src
+          if git diff --cached --quiet; then
+            echo "Source formatting already clean"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Normalize Katha source formatting"
+          git push origin HEAD:hardening/dependency-remediation-20261117
