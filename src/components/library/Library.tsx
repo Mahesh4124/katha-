@@ -217,7 +217,6 @@ export function Library({
               <button
                 key={id}
                 type="button"
-                aria-label={THEMES[id].name}
                 aria-pressed={prefs.theme === id}
                 className={"katha-world-card " + (prefs.theme === id ? "is-current" : "")}
                 onClick={() => setPrefs({ ...prefs, theme: id })}
